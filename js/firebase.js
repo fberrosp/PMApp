@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"
+import { getFirestore, collection, addDoc, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -19,7 +19,7 @@ appId: "1:1004125926086:web:6c1049212084453c485dc7"
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore
+const db = getFirestore();
 
 export function createUser (email, password){
     createUserWithEmailAndPassword(auth, email, password)
@@ -27,6 +27,7 @@ export function createUser (email, password){
       // Signed in 
       const user = userCredential.user;
       console.log('account created!')
+      window.location = 'login.html';
       // ...
     })
     .catch((error) => {
@@ -45,6 +46,7 @@ export function signInUser (email, password){
       const user = userCredential.user;
       console.log('logged in!')
       // ...
+      window.location = 'index.html';
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -53,8 +55,54 @@ export function signInUser (email, password){
     });
 }
 
+//Logout
+export function logOutUser (){
+  signOut(auth).then(() => {
+    // Sign-out successful.
+    console.log('logged out!')
 
-export const saveUser = (firstName, lastName, email, password) => {
-    addDoc(collection(db, 'tasks'))
-    console.log(firstName, lastName, email, password)
+  }).catch((error) => {
+    //An error happened.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(errorCode + errorMessage)
+  });
 }
+
+//Auth state changed
+export function checkState (){
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/firebase.User
+      const uid = user.uid;
+      console.log('Auth: signed in!')
+      // ...
+    } else if (window.location.href.slice(-10) !== 'login.html'){
+      window.location = 'login.html'
+      console.log('Auth: signed out! window loop')
+      console.log(window.location.href.slice(-10))
+    } else {
+      // User is signed out
+      // ...
+      console.log('Auth: signed out!')
+    }
+  });
+}
+
+//Get Data once
+export const getTasks = () => getDocs(collection(db, 'tasks'))
+
+//Save data
+export const saveUser = (firstName, lastName, email) => {
+    addDoc(collection(db, 'tasks'), { firstName, lastName, email })
+    console.log(firstName, lastName, email)
+}
+
+//Save task
+export const saveTask = (title, description) => {
+  addDoc(collection(db, 'tasks'), { title, description })
+}
+
+//real time updating
+export const onGetTasks = (callback) => onSnapshot(collection(db, 'tasks'), callback)

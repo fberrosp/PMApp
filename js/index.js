@@ -1,5 +1,4 @@
-import { saveUser, signInUser } from "./firebase.js";
-import { createUser } from "./firebase.js";
+import { createUser, signInUser, logOutUser, checkState } from "./firebase.js";
 
 //Alert wrapper
 const alertPlaceholder = document.getElementById('registerAccountAlert');
@@ -44,18 +43,34 @@ const loginForm = document.querySelector('#login-form');
 
 if (loginForm !== null){
   loginForm.addEventListener('submit', e => {
-    e.preventDefault()
+    e.preventDefault();
 
     const email = document.querySelector('#login-Email').value;
     const password = document.querySelector('#login-Password').value;
-
-    //saveUser(firstName, lastName, email, password);
-    //console.log(email, password)
 
     signInUser(email, password);
     loginForm.reset();
   })
 }
+
+//Logout
+const logout = document.querySelector('#logout-button');
+
+if (logout !== null){
+  logout.addEventListener('click', e => {
+    e.preventDefault();
+
+    logOutUser()
+  })
+}
+
+//Posts
+const postList = document.querySelector('#posts');
+
+
+//Check state
+checkState()
+
 
 
 
