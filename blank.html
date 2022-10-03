@@ -19,6 +19,7 @@
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://raw.githubusercontent.com/StartBootstrap/startbootstrap-sb-admin-2/master/css/sb-admin-2.min.css">
 
 </head>
 
@@ -150,7 +151,7 @@
         <div id="content-wrapper" class="d-flex flex-column">
 
             <!-- Main Content -->
-            <div id="content">
+            < id="content">
 
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -365,17 +366,30 @@
                 </div>
                 <!-- /.container-fluid -->
 
-                <form id="task-form">
-                    <label for="title">Title:</label>
-                    <input type="text" placeholder="task-title" id="task-title">
+                <div class="container p-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h1 class="h4">Add Task</h1>
+                                        <form id="task-form">
+                                            <label for="title">Title:</label>
+                                            <input class="form-control mb-3" type="text" placeholder="task-title" id="task-title">
+                        
+                                            <label for="description">Description:</label>
+                                            <textarea class="form-control mb-3" id="task-description" rows="3" placeholder="Task Description"></textarea>
+                        
+                                            <button class="btn btn-primary" id="btn-task-save">Save</button>
+                                        </form>
+                                </div>
+                            </div>
+                        </div>
 
-                    <label for="description">Description:</label>
-                    <textarea id="task-description" rows="3" placeholder="Task Description"></textarea>
+                        <div class="col-md-6" id="tasks-container"></div>
+                    </div>
+                </div>
 
-                    <button id="btn-task-save">Save</button>
-                </form>
 
-                <div id="tasks-container"></div>
 
             </div>
             <!-- End of Main Content -->

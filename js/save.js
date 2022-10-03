@@ -8,20 +8,22 @@ let id = ''
 
 window.addEventListener('DOMContentLoaded', async () => {
     onGetTasks((querySnapshot) => {
-        let html = '';
+        tasksContainer.innerHTML = '';
 
         querySnapshot.forEach(doc => {
             const task = doc.data();
-            html += `
-                <div>
-                    <h3>${task.title}</h3>
+            //change to Document.createelement() for better security
+            tasksContainer.innerHTML += `
+                <div class="card card-body mt-2 border-primary">
+                    <h3 class="h5">${task.title}</h3>
                     <p>${task.description}</p>
-                    <button class = "btn-delete" data-id="${doc.id}">Delete</button>
-                    <button class = "btn-edit" data-id="${doc.id}">Edit</button>
+                    <div class="d-flex">
+                        <button class = "btn btn-primary btn-delete" data-id="${doc.id}">Delete</button>
+                        <button class = "btn btn-secondary btn-edit" data-id="${doc.id}">Edit</button>
+                    </div>
                 </div>
             `;    
         });
-        tasksContainer.innerHTML = html;
 
         //delete task
         const btnsDelete = tasksContainer.querySelectorAll(".btn-delete")
@@ -46,16 +48,13 @@ window.addEventListener('DOMContentLoaded', async () => {
                 taskForm['btn-task-save'].innerText = 'Update'
             })
         })
-
     });
-
-
 });
 
 
+//submit or edit
 taskForm.addEventListener('submit', (e) => {
     e.preventDefault()
-
 
     const title = taskForm['task-title']
     const description = taskForm['task-description']
@@ -69,7 +68,5 @@ taskForm.addEventListener('submit', (e) => {
         editStatus = false;
         taskForm['btn-task-save'].innerText = 'Save'
     }
-
     taskForm.reset()
-
 })
