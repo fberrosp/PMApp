@@ -1,7 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"
-import { getFirestore, collection, addDoc, getDocs, onSnapshot, deleteDoc, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, onSnapshot, deleteDoc, doc, getDoc, updateDoc, Timestamp, orderBy, query } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
+
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -102,11 +103,18 @@ export const saveUser = (firstName, lastName, email) => {
 
 //Save task
 export const saveTask = (title, description) => {
-  addDoc(collection(db, 'tasks'), { title, description })
+  const creationDate = Timestamp.now()
+  console.log(creationDate)
+  addDoc(collection(db, 'tasks'), { title, description, creationDate })
 }
 
 //real time updating
-export const onGetTasks = (callback) => onSnapshot(collection(db, 'tasks'), callback);
+export const onGetTasks = (callback) => {
+  const currentData = query(collection(db, 'tasks'), orderBy('creationDate', 'desc'))
+  //console.log(currentData)
+  onSnapshot(currentData, callback);
+}
+export const order = parameter => orderBy(parameter);
 
 //delete task
 export const deleteTask = id => deleteDoc(doc(db, 'tasks', id));
@@ -116,3 +124,8 @@ export const getTask = id => getDoc(doc(db, 'tasks', id));
 
 //update task
 export const updateTask = (id, newFields) => updateDoc(doc(db, 'tasks', id), newFields);
+
+//getTimestamp
+export const getTimestamp = () => {
+  //console.log(Timestamp.now())
+}

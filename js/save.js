@@ -1,4 +1,4 @@
-import { saveTask , getTasks, onGetTasks, deleteTask, getTask, updateTask } from "./firebase.js";
+import { saveTask , onGetTasks, deleteTask, getTask, updateTask, getTimestamp, order } from "./firebase.js";
 
 const tasksContainer = document.getElementById('tasks-container');
 const taskForm = document.getElementById('task-form');
@@ -9,24 +9,32 @@ let id = ''
 window.addEventListener('DOMContentLoaded', async () => {
     onGetTasks((querySnapshot) => {
         tasksContainer.innerHTML = '';
-
+        getTimestamp()
+        
         querySnapshot.forEach(doc => {
             const task = doc.data();
             //change to Document.createelement() for better security
+            //console.log(task)
+            //console.log(tasksContainer)
+            const formattedDate = task.creationDate.toDate().toISOString().substr(0,10)
+            const formattedTime = task.creationDate.toDate().toString().slice(0,-18).slice(15)
+
             tasksContainer.innerHTML += `
                 <div class="card card-body mt-2 border-primary">
                     <h3 class="h5">${task.title}</h3>
                     <p>${task.description}</p>
+                    <p>Creation date: ${formattedDate} at ${formattedTime}</p>
                     <div class="d-flex">
                         <button class = "btn btn-primary btn-delete" data-id="${doc.id}">Delete</button>
                         <button class = "btn btn-secondary btn-edit" data-id="${doc.id}">Edit</button>
                     </div>
                 </div>
-            `;    
+            `;
+            
         });
 
 
-        console.log(tasksContainer)
+        //console.log(tasksContainer)
 
         //delete task
         const btnsDelete = tasksContainer.querySelectorAll(".btn-delete")
