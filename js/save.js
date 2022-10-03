@@ -43,7 +43,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 
                 editStatus = true;
                 id = doc.id;
-
                 taskForm['btn-task-save'].innerText = 'Update'
             })
         })
@@ -68,6 +67,7 @@ taskForm.addEventListener('submit', (e) => {
             title: title.value, 
             description: description.value});
         editStatus = false;
+        taskForm['btn-task-save'].innerText = 'Save'
     }
 
     taskForm.reset()
