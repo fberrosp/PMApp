@@ -7,6 +7,7 @@ import { getFirestore, collection, addDoc, getDocs, onSnapshot, deleteDoc, doc, 
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
+//ADD WHITELIST TO FIREBASE (WHICH APPS CAN CONNECT TO FIREBASE SERVER)
 const firebaseConfig = {
 apiKey: "AIzaSyA79i2Jibtq8lEAMhBw42gN5m_x0KnesXc",
 authDomain: "issuetrackingsystem-9d0f7.firebaseapp.com",

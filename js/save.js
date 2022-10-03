@@ -25,6 +25,9 @@ window.addEventListener('DOMContentLoaded', async () => {
             `;    
         });
 
+
+        console.log(tasksContainer)
+
         //delete task
         const btnsDelete = tasksContainer.querySelectorAll(".btn-delete")
         btnsDelete.forEach(btn => {
