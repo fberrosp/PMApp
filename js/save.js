@@ -9,21 +9,23 @@ let id = ''
 window.addEventListener('DOMContentLoaded', async () => {
     onGetTasks((querySnapshot) => {
         tasksContainer.innerHTML = '';
-        getTimestamp()
+        //getTimestamp()
+        //console.log(getTimestamp())
         
         querySnapshot.forEach(doc => {
             const task = doc.data();
             //change to Document.createelement() for better security
-            //console.log(task)
+            //console.log(task.creationDate.toDate().toString().slice(0, 20))
             //console.log(tasksContainer)
-            const formattedDate = task.creationDate.toDate().toISOString().substr(0,10)
-            const formattedTime = task.creationDate.toDate().toString().slice(0,-18).slice(15)
+            const createDate = task.creationDate.toDate().toString().slice(0, 21)
+            const lastDate = task.lastEdit.toDate().toString().slice(0, 21)
 
             tasksContainer.innerHTML += `
                 <div class="card card-body mt-2 border-primary">
                     <h3 class="h5">${task.title}</h3>
                     <p>${task.description}</p>
-                    <p>Creation date: ${formattedDate} at ${formattedTime}</p>
+                    <p>Created: ${createDate}</p>
+                    <p>Last edited: ${lastDate}</p>
                     <div class="d-flex">
                         <button class = "btn btn-primary btn-delete" data-id="${doc.id}">Delete</button>
                         <button class = "btn btn-secondary btn-edit" data-id="${doc.id}">Edit</button>
@@ -75,7 +77,8 @@ taskForm.addEventListener('submit', (e) => {
     }else{
         updateTask(id, {
             title: title.value, 
-            description: description.value});
+            description: description.value,
+            lastEdit: getTimestamp()});
         editStatus = false;
         taskForm['btn-task-save'].innerText = 'Save'
     }

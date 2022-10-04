@@ -127,5 +127,5 @@ export const updateTask = (id, newFields) => updateDoc(doc(db, 'tasks', id), new
 
 //getTimestamp
 export const getTimestamp = () => {
-  //console.log(Timestamp.now())
+  return Timestamp.now()
 }
