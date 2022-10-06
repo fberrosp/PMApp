@@ -1,4 +1,4 @@
-import { createUser, signInUser, logOutUser, checkState } from "./firebase.js";
+import { createUser, signInUser, logOutUser, checkState, saveUser } from "./firebase.js";
 
 //Alert wrapper
 const alertPlaceholder = document.getElementById('registerAccountAlert');
@@ -19,7 +19,7 @@ const alert = (message, type) => {
 const signupForm = document.querySelector('#signup-form');
 
 if (signupForm !== null){
-  signupForm.addEventListener('submit', (e) => {
+  signupForm.addEventListener('submit', e => {
     e.preventDefault();
 
     const firstName = document.querySelector('#signup-FirstName').value;
@@ -29,9 +29,10 @@ if (signupForm !== null){
 
     //saveUser(firstName, lastName, email, password);
 
-    createUser(email, password);
+    createUser(email, password, firstName, lastName);
+    //console.log(user)
+    //saveUser(firstName, lastName, user);
     signupForm.reset();
-
     //Alert trigger
     alert('Account created successfully', 'success')
   })

@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"
-import { getFirestore, collection, addDoc, getDocs, onSnapshot, deleteDoc, doc, getDoc, updateDoc, Timestamp, orderBy, query } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, onSnapshot, deleteDoc, doc, getDoc, updateDoc, Timestamp, orderBy, query, setDoc } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -23,13 +23,22 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore();
 
-export function createUser (email, password){
+export function createUser (email, password, firstName, lastName){
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed in 
       const user = userCredential.user;
-      console.log('account created!')
-      window.location = 'login.html';
+      const userData = {
+        email: user.email,
+        firstName: firstName,
+        lastName: lastName,
+        role: false,
+      };
+
+      return setDoc(doc(db, 'users', user.uid), userData)
+      .then(() => {
+        console.log('account created!')
+      })
       // ...
     })
     .catch((error) => {
@@ -38,6 +47,21 @@ export function createUser (email, password){
       console.log(errorCode + errorMessage)
       // ..
     });
+}
+
+//Save user data
+export const saveUser = async (firstName, lastName, user) => {
+
+
+
+  await setDoc(doc(db, 'users', user.uid), userData)
+  .then(() => {
+    console.log('Document added succesfully!')
+  })
+  .catch(error => {
+    console.log(error)
+  })
+
 }
 
 //Siign-in user
@@ -55,6 +79,7 @@ export function signInUser (email, password){
       const errorMessage = error.message;
       console.log(errorCode + errorMessage)
     });
+    return user
 }
 
 //Logout
@@ -74,32 +99,27 @@ export function logOutUser (){
 //Auth state changed
 export function checkState (){
   onAuthStateChanged(auth, (user) => {
+
     if (user) {
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/firebase.User
       const uid = user.uid;
-      console.log('Auth: signed in!')
+      console.log('Auth: signed in!', user.email)
       // ...
-    } else if (window.location.href.slice(-10) !== 'login.html'){
-      window.location = 'login.html'
-      console.log('Auth: signed out! window loop')
-      console.log(window.location.href.slice(-10))
+    } else if ( !window.location.toString().includes('login.html') || !window.location.toString().includes('register.html')){
+      //window.location = 'login.html'
+      console.log('Auth: signed out! login again!')
     } else {
+      window.location = "login.html"
       // User is signed out
       // ...
-      console.log('Auth: signed out!')
+      console.log('Auth: signed out! register')
     }
   });
 }
 
 //Get Data once
 export const getTasks = () => getDocs(collection(db, 'tasks'))
-
-//Save data
-export const saveUser = (firstName, lastName, email) => {
-    addDoc(collection(db, 'tasks'), { firstName, lastName, email })
-    console.log(firstName, lastName, email)
-}
 
 //Save task
 export const saveTask = (title, description) => {
