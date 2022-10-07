@@ -1,4 +1,4 @@
-import { createUser, signInUser, logOutUser, checkState, saveUser } from "./firebase.js";
+import { createUser, signInUser, logOutUser, checkState, googleSignIn } from "./firebase.js";
 
 //Alert wrapper
 const alertPlaceholder = document.getElementById('registerAccountAlert');
@@ -35,6 +35,15 @@ if (signupForm !== null){
     signupForm.reset();
     //Alert trigger
     alert('Account created successfully', 'success')
+  })
+}
+
+//Google Login
+const googleButton = document.querySelector('#googleLogin')
+
+if (googleButton !== null){
+  googleButton.addEventListener('click', e => {
+    googleSignIn();
   })
 }
 

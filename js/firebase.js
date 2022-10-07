@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"
 import { getFirestore, collection, addDoc, getDocs, onSnapshot, deleteDoc, doc, getDoc, updateDoc, Timestamp, orderBy, query, setDoc } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
 
 
@@ -22,7 +22,10 @@ appId: "1:1004125926086:web:6c1049212084453c485dc7"
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore();
+const provider = new GoogleAuthProvider();
 
+
+//Create user and store its data with emaila nd pw
 export function createUser (email, password, firstName, lastName){
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
@@ -35,6 +38,7 @@ export function createUser (email, password, firstName, lastName){
         role: false,
       };
 
+      //Save user data
       return setDoc(doc(db, 'users', user.uid), userData)
       .then(() => {
         console.log('account created!')
@@ -49,19 +53,27 @@ export function createUser (email, password, firstName, lastName){
     });
 }
 
-//Save user data
-export const saveUser = async (firstName, lastName, user) => {
-
-
-
-  await setDoc(doc(db, 'users', user.uid), userData)
-  .then(() => {
-    console.log('Document added succesfully!')
-  })
-  .catch(error => {
-    console.log(error)
-  })
-
+//create user with google
+export function googleSignIn () {
+  signInWithPopup(auth, provider)
+  .then((result) => {
+    // This gives you a Google Access Token. You can use it to access the Google API.
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const token = credential.accessToken;
+    // The signed-in user info.
+    const user = result.user;
+    console.log('gogole signin')
+    // ...
+  }).catch((error) => {
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // The email of the user's account used.
+    const email = error.customData.email;
+    // The AuthCredential type that was used.
+    const credential = GoogleAuthProvider.credentialFromError(error);
+    // ...
+  });
 }
 
 //Siign-in user
