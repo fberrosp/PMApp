@@ -22,20 +22,23 @@ appId: "1:1004125926086:web:6c1049212084453c485dc7"
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore();
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
 
-//Save user data
+//------------------------------------------------------AUTH------------------------------------------------------
+
+//Save user data on collection
 function saveUserData(user, firstName, lastName){
   const userData = {
     email: user.email,
     firstName: firstName,
     lastName: lastName,
+    lastLogin: Timestamp.now()
   };
 
   setDoc(doc(db, 'users', user.uid), userData)
   .then(() => {
 
-    console.log('account created!')
+    console.log('account data saved!')
   })
 }
 
@@ -45,7 +48,7 @@ export function createUser (email, password, firstName, lastName){
     .then((userCredential) => {
       // Signed in 
       const user = userCredential.user;
-
+      console.log('account created with email and passowrd')
       //Save user data
       saveUserData(user, firstName, lastName)
       // ...
@@ -60,7 +63,7 @@ export function createUser (email, password, firstName, lastName){
 
 //create user with google
 export function googleSignIn () {
-  signInWithPopup(auth, provider)
+  signInWithPopup(auth, googleProvider)
   .then((result) => {
     // This gives you a Google Access Token. You can use it to access the Google API.
     const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -121,14 +124,19 @@ export function logOutUser (){
 export function checkState (){
   onAuthStateChanged(auth, (user) => {
 
-    if (user) {
+    if (user) { 
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/firebase.User
       const uid = user.uid;
       console.log('Auth: signed in!', user.email)
+
+      if (window.location.toString().includes('login.html') || window.location.toString().includes('register.html')) { //user signed in but still in login or register screen
+        window.location = "index.html"
+      }
+
       // ...
-    } else if ( !window.location.toString().includes('login.html') || !window.location.toString().includes('register.html')){
-      //window.location = 'login.html'
+    } else if ( !window.location.toString().includes('login.html') || !window.location.toString().includes('register.html')){ //redirect to login or register if logged out
+      window.location = 'login.html'
       console.log('Auth: signed out! login again!')
     } else {
       window.location = "login.html"
@@ -139,9 +147,7 @@ export function checkState (){
   });
 }
 
-//Get Data once
-export const getTasks = () => getDocs(collection(db, 'tasks'))
-
+//------------------------------------------------------TASKS------------------------------------------------------
 //Save task
 export const saveTask = (title, description) => {
   const creationDate = Timestamp.now()
@@ -149,22 +155,48 @@ export const saveTask = (title, description) => {
   addDoc(collection(db, 'tasks'), { title, description, creationDate })
 }
 
-//real time updating
+//edit task
+export const getTask = id => getDoc(doc(db, 'tasks', id));
+
+//delete task
+export const deleteTask = id => deleteDoc(doc(db, 'tasks', id));
+
+//update task
+export const updateTask = (id, newFields) => updateDoc(doc(db, 'tasks', id), newFields);
+
+//TASKS - real time updating
 export const onGetTasks = (callback) => {
   const currentData = query(collection(db, 'tasks'), orderBy('creationDate', 'desc'))
   //console.log(currentData)
   onSnapshot(currentData, callback);
 }
-export const order = parameter => orderBy(parameter);
 
-//delete task
-export const deleteTask = id => deleteDoc(doc(db, 'tasks', id));
+//------------------------------------------------------PROJECTS------------------------------------------------------
+//save project
+export const saveProject = (projectName, projectOwner, description) => {
+  const creationDate = Timestamp.now()
+  console.log(creationDate)
+  addDoc(collection(db, 'projects'), { projectName, projectOwner, description, creationDate })
+}
 
-//edit task
-export const getTask = id => getDoc(doc(db, 'tasks', id));
+//edit project
+export const getProject = id => getDoc(doc(db, 'projects', id));
 
-//update task
-export const updateTask = (id, newFields) => updateDoc(doc(db, 'tasks', id), newFields);
+//delete project
+export const deleteProject = id => deleteDoc(doc(db, 'projects', id));
+
+//update project
+export const updateProject = (id, newFields) => updateDoc(doc(db, 'projects', id), newFields);
+
+//PROJECTS - real time updating
+export const onGetProjects = (callback) => {
+  const currentData = query(collection(db, 'projects'), orderBy('creationDate', 'desc'))
+  //console.log(currentData)
+  onSnapshot(currentData, callback);
+}
+
+
+
 
 //getTimestamp
 export const getTimestamp = () => {

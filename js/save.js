@@ -1,4 +1,4 @@
-import { saveTask , onGetTasks, deleteTask, getTask, updateTask, getTimestamp, order } from "./firebase.js";
+import { saveTask , onGetTasks, deleteTask, getTask, updateTask, getTimestamp } from "./firebase.js";
 
 const tasksContainer = document.getElementById('tasks-container');
 const taskForm = document.getElementById('task-form');
@@ -6,6 +6,7 @@ const taskForm = document.getElementById('task-form');
 let editStatus = false;
 let id = ''
 
+//Get tasks real time
 window.addEventListener('DOMContentLoaded', async () => {
     onGetTasks((querySnapshot) => {
         tasksContainer.innerHTML = '';
@@ -17,8 +18,15 @@ window.addEventListener('DOMContentLoaded', async () => {
             //change to Document.createelement() for better security
             //console.log(task.creationDate.toDate().toString().slice(0, 20))
             //console.log(tasksContainer)
-            const createDate = task.creationDate.toDate().toString().slice(0, 21)
-            const lastDate = task.lastEdit.toDate().toString().slice(0, 21)
+            const createDate = task.creationDate.toDate().toString().slice(0, 21);
+            let lastDate;
+
+            if (task.lastEdit != null) {
+                lastDate = task.lastEdit.toDate().toString().slice(0, 21)
+            } else {
+                lastDate = "No edits"
+                //console.log(lastDate)
+            }
 
             tasksContainer.innerHTML += `
                 <div class="card card-body mt-2 border-primary">
