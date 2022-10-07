@@ -67,8 +67,10 @@ export function googleSignIn () {
     const token = credential.accessToken;
     // The signed-in user info.
     const user = result.user;
+    const firstName = user.displayName.split(" ")[0]
+    const lastName = user.displayName.split(" ")[1]
 
-    saveUserData(user, user.displayName, "test")
+    saveUserData(user, firstName, lastName)
     console.log('gogole signin')
     // ...
   }).catch((error) => {
