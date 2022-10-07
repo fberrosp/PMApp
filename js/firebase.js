@@ -24,6 +24,20 @@ const auth = getAuth(app);
 const db = getFirestore();
 const provider = new GoogleAuthProvider();
 
+//Save user data
+function saveUserData(user, firstName, lastName){
+  const userData = {
+    email: user.email,
+    firstName: firstName,
+    lastName: lastName,
+  };
+
+  setDoc(doc(db, 'users', user.uid), userData)
+  .then(() => {
+
+    console.log('account created!')
+  })
+}
 
 //Create user and store its data with emaila nd pw
 export function createUser (email, password, firstName, lastName){
@@ -31,18 +45,9 @@ export function createUser (email, password, firstName, lastName){
     .then((userCredential) => {
       // Signed in 
       const user = userCredential.user;
-      const userData = {
-        email: user.email,
-        firstName: firstName,
-        lastName: lastName,
-        role: false,
-      };
 
       //Save user data
-      return setDoc(doc(db, 'users', user.uid), userData)
-      .then(() => {
-        console.log('account created!')
-      })
+      saveUserData(user, firstName, lastName)
       // ...
     })
     .catch((error) => {
@@ -62,6 +67,8 @@ export function googleSignIn () {
     const token = credential.accessToken;
     // The signed-in user info.
     const user = result.user;
+
+    saveUserData(user, user.displayName, "test")
     console.log('gogole signin')
     // ...
   }).catch((error) => {
