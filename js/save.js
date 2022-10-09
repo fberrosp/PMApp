@@ -10,14 +10,9 @@ let id = ''
 window.addEventListener('DOMContentLoaded', async () => {
     onGetTasks((querySnapshot) => {
         tasksContainer.innerHTML = '';
-        //getTimestamp()
-        //console.log(getTimestamp())
         
         querySnapshot.forEach(doc => {
             const task = doc.data();
-            //change to Document.createelement() for better security
-            //console.log(task.creationDate.toDate().toString().slice(0, 20))
-            //console.log(tasksContainer)
             const createDate = task.creationDate.toDate().toString().slice(0, 21);
             let lastDate;
 
@@ -25,7 +20,6 @@ window.addEventListener('DOMContentLoaded', async () => {
                 lastDate = task.lastEdit.toDate().toString().slice(0, 21)
             } else {
                 lastDate = "No edits"
-                //console.log(lastDate)
             }
 
             tasksContainer.innerHTML += `
@@ -42,9 +36,6 @@ window.addEventListener('DOMContentLoaded', async () => {
             `;
             
         });
-
-
-        //console.log(tasksContainer)
 
         //delete task
         const btnsDelete = tasksContainer.querySelectorAll(".btn-delete")

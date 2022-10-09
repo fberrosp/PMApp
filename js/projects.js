@@ -10,14 +10,9 @@ let id = ''
 window.addEventListener('DOMContentLoaded', async () => {
     onGetProjects((querySnapshot) => {
         projectsContainer.innerHTML = '';
-        //getTimestamp()
-        //console.log(getTimestamp())
         
         querySnapshot.forEach(doc => {
             const project = doc.data();
-            //change to Document.createelement() for better security
-            //console.log(project.creationDate.toDate().toString().slice(0, 20))
-            //console.log(projectsContainer)
             const createDate = project.creationDate.toDate().toString().slice(0, 21)
             let lastDate;
 
@@ -42,9 +37,6 @@ window.addEventListener('DOMContentLoaded', async () => {
             `;
             
         });
-
-
-        //console.log(projectsContainer)
 
         //delete project
         const btnsDelete = projectsContainer.querySelectorAll(".btn-delete")

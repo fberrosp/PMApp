@@ -380,20 +380,8 @@
                     <div class="container p-4">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h1 class="h4">Add Project</h1>
-                                            <form id="project-form">
-                                                <label for="title">Project Information:</label>
-                                                <input class="form-control mb-3" type="text" placeholder="project-title" id="project-title">
-                                                <input class="form-control mb-3" type="text" placeholder="project-owner" id="project-owner">
-                                                <label for="description">Description:</label>
-                                                <textarea class="form-control mb-3" id="project-description" rows="3" placeholder="Project Description"></textarea>
-                            
-                                                <button class="btn btn-primary" id="btn-project-save">Save</button>
-                                            </form>
-                                    </div>
-                                </div>
+                            <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createProjectModal">Create Project</button>
                             </div>
 
                             <div class="col-md-6" id="project-container"></div>
@@ -428,8 +416,7 @@
     </a>
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -442,6 +429,33 @@
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                     <a class="btn btn-primary" id="logout-button" href="login.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Create Project Modal -->
+    <div class="modal fade" id="createProjectModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Create Project</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="project-form">
+                        <label for="title">Project Information:</label>
+                        <input class="form-control mb-3" type="text" placeholder="project-title" id="project-title">
+                        <input class="form-control mb-3" type="text" placeholder="project-owner" id="project-owner">
+
+                        <label for="description">Description:</label>
+                        <textarea class="form-control mb-3" id="project-description" rows="3" placeholder="Project Description"></textarea>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button class="btn btn-primary" id="btn-project-save">Save</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
