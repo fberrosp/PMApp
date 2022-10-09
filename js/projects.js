@@ -10,6 +10,7 @@ let id = ''
 //Get projects real time -> table version
 window.addEventListener('DOMContentLoaded', async () => {
     onGetProjects((querySnapshot) => {
+        projectTableBody.textContent = '';
 
         querySnapshot.forEach(doc => {
             const project = doc.data();
