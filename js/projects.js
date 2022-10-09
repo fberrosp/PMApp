@@ -1,45 +1,65 @@
 import { saveProject , onGetProjects, deleteProject, getProject, updateProject, getTimestamp } from "./firebase.js";
 
-const projectsContainer = document.getElementById('project-container');
 const projectForm = document.getElementById('project-form');
+const projectTableBody = document.getElementById('project-table-body');
+const projectRowData = document.createDocumentFragment();
 
 let editStatus = false;
 let id = ''
 
-//Get projects real time
+//Get projects real time -> table version
 window.addEventListener('DOMContentLoaded', async () => {
     onGetProjects((querySnapshot) => {
-        projectsContainer.innerHTML = '';
-        
+
         querySnapshot.forEach(doc => {
             const project = doc.data();
             const createDate = project.creationDate.toDate().toString().slice(0, 21)
             let lastDate;
-
             if (project.lastEdit != null) {
                 lastDate = project.lastEdit.toDate().toString().slice(0, 21)
             } else {
                 lastDate = "No edits"
-                //console.log(lastDate)
             }
-            projectsContainer.innerHTML += `
-                <div class="card card-body mt-2 border-primary">
-                    <h3 class="h5">Project: ${project.projectName}</h3>
-                    <p>Owner: ${project.projectOwner}</p>
-                    <p>Description: ${project.description}</p>
-                    <p>Created: ${createDate}</p>
-                    <p>Last edited: ${lastDate}</p>
-                    <div class="d-flex">
-                        <button class = "btn btn-primary btn-delete" data-id="${doc.id}">Delete</button>
-                        <button class = "btn btn-secondary btn-edit" data-id="${doc.id}">Edit</button>
-                    </div>
-                </div>
-            `;
+
+            let row = document.createElement('tr');
+            let projectName = document.createElement('th');
+            let projectOwner = document.createElement('td');
+            let creationDate = document.createElement('td');
+            let lastEdit = document.createElement('td');
+            let editProject = document.createElement('td');
+            let editProjectButton = document.createElement('button');
+            let deleteProject = document.createElement('td');
+            let deleteProjectButton = document.createElement('button');
+
+            projectName.textContent = project.projectName;
+            projectOwner.textContent = project.projectOwner;
+            creationDate.textContent = createDate;
+            lastEdit.textContent = lastDate;
+            editProject.appendChild(editProjectButton);
+            editProjectButton.setAttribute('data-id', doc.id);
+            editProjectButton.setAttribute('data-bs-toggle', 'modal');
+            editProjectButton.setAttribute('data-bs-target', '#createProjectModal');
+            editProjectButton.classList.add('btn', 'btn-secondary', 'btn-edit');
+            editProjectButton.textContent = 'Edit';
+            deleteProject.appendChild(deleteProjectButton);
+            deleteProjectButton.setAttribute('data-id', doc.id);
+            deleteProjectButton.classList.add('btn', 'btn-primary', 'btn-delete');
+            deleteProjectButton.textContent = 'Delete';
+
+            row.appendChild(projectName);
+            row.appendChild(projectOwner);
+            row.appendChild(creationDate);
+            row.appendChild(lastEdit);
+            row.appendChild(editProject);
+            row.appendChild(deleteProject);
+
+            projectRowData.appendChild(row);
+            projectTableBody.appendChild(projectRowData);
             
         });
 
         //delete project
-        const btnsDelete = projectsContainer.querySelectorAll(".btn-delete")
+        const btnsDelete = projectTableBody.querySelectorAll(".btn-delete")
         btnsDelete.forEach(btn => {
             btn.addEventListener('click', ({target: {dataset}}) => {
                 deleteProject(dataset.id)
@@ -47,8 +67,8 @@ window.addEventListener('DOMContentLoaded', async () => {
         })
 
         //edit project
-        const btnsEdit = projectsContainer.querySelectorAll(".btn-edit")
-        btnsEdit.forEach(btn => {
+        const btnsEdit = projectTableBody.querySelectorAll(".btn-edit")
+        .forEach(btn => {
             btn.addEventListener('click', async ({target: {dataset}}) => {
                 const doc = await getProject(dataset.id)
                 const project = doc.data()
@@ -59,12 +79,11 @@ window.addEventListener('DOMContentLoaded', async () => {
 
                 editStatus = true;
                 id = doc.id;
-                projectForm['btn-project-save'].innerText = 'Update'
+                projectForm['btn-project-save'].textContent = 'Update'
             })
         })
     });
 });
-
 
 //submit or edit
 projectForm.addEventListener('submit', (e) => {
@@ -85,7 +104,7 @@ projectForm.addEventListener('submit', (e) => {
         }
         updateProject(id, newFields);
         editStatus = false;
-        projectForm['btn-project-save'].innerText = 'Save'
+        projectForm['btn-project-save'].textContent = 'Save'
     }
     projectForm.reset()
 })
