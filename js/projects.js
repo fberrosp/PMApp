@@ -27,6 +27,8 @@ window.addEventListener('DOMContentLoaded', async () => {
             let projectOwner = document.createElement('td');
             let creationDate = document.createElement('td');
             let lastEdit = document.createElement('td');
+            let projectTasks = document.createElement('td');
+            let projectTasksButton = document.createElement('button');
             let editProject = document.createElement('td');
             let editProjectButton = document.createElement('button');
             let deleteProject = document.createElement('td');
@@ -36,21 +38,29 @@ window.addEventListener('DOMContentLoaded', async () => {
             projectOwner.textContent = project.projectOwner;
             creationDate.textContent = createDate;
             lastEdit.textContent = lastDate;
+
+            projectTasks.appendChild(projectTasksButton);
+            projectTasksButton.setAttribute('data-id', doc.id);
+            projectTasksButton.classList.add('btn', 'btn-primary', 'btn-projectTask');
+            projectTasksButton.textContent = 'Tasks';
+
             editProject.appendChild(editProjectButton);
             editProjectButton.setAttribute('data-id', doc.id);
             editProjectButton.setAttribute('data-bs-toggle', 'modal');
             editProjectButton.setAttribute('data-bs-target', '#createProjectModal');
             editProjectButton.classList.add('btn', 'btn-secondary', 'btn-edit');
             editProjectButton.textContent = 'Edit';
+
             deleteProject.appendChild(deleteProjectButton);
             deleteProjectButton.setAttribute('data-id', doc.id);
-            deleteProjectButton.classList.add('btn', 'btn-primary', 'btn-delete');
+            deleteProjectButton.classList.add('btn', 'btn-danger', 'btn-delete');
             deleteProjectButton.textContent = 'Delete';
 
             row.appendChild(projectName);
             row.appendChild(projectOwner);
             row.appendChild(creationDate);
             row.appendChild(lastEdit);
+            row.appendChild(projectTasks);
             row.appendChild(editProject);
             row.appendChild(deleteProject);
 
@@ -59,30 +69,41 @@ window.addEventListener('DOMContentLoaded', async () => {
             
         });
 
+        //task project
+        const btnsProjectTask = projectTableBody.querySelectorAll(".btn-projectTask");
+        btnsProjectTask.forEach(btn => {
+            btn.addEventListener('click', ({target: {dataset}}) => {
+                const projectId = dataset.id;
+                sessionStorage.setItem('projectId', projectId);
+                window.location.href = 'blank.html';
+            })
+        });
+
+
         //delete project
-        const btnsDelete = projectTableBody.querySelectorAll(".btn-delete")
+        const btnsDelete = projectTableBody.querySelectorAll(".btn-delete");
         btnsDelete.forEach(btn => {
             btn.addEventListener('click', ({target: {dataset}}) => {
                 deleteProject(dataset.id)
-            })
-        })
+            });
+        });
 
         //edit project
-        const btnsEdit = projectTableBody.querySelectorAll(".btn-edit")
-        .forEach(btn => {
+        const btnsEdit = projectTableBody.querySelectorAll(".btn-edit");
+        btnsEdit.forEach(btn => {
             btn.addEventListener('click', async ({target: {dataset}}) => {
-                const doc = await getProject(dataset.id)
-                const project = doc.data()
+                const doc = await getProject(dataset.id);
+                const project = doc.data();
 
-                projectForm['project-title'].value = project.projectName
-                projectForm['project-owner'].value = project.projectOwner
-                projectForm['project-description'].value = project.description
+                projectForm['project-title'].value = project.projectName;
+                projectForm['project-owner'].value = project.projectOwner;
+                projectForm['project-description'].value = project.description;
 
                 editStatus = true;
                 id = doc.id;
-                projectForm['btn-project-save'].textContent = 'Update'
-            })
-        })
+                projectForm['btn-project-save'].textContent = 'Update';
+            });
+        });
     });
 });
 
@@ -108,4 +129,4 @@ projectForm.addEventListener('submit', (e) => {
         projectForm['btn-project-save'].textContent = 'Save'
     }
     projectForm.reset()
-})
+});

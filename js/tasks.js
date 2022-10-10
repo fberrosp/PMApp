@@ -1,4 +1,4 @@
-import { saveTask , onGetTasks, deleteTask, getTask, updateTask, getTimestamp } from "./firebase.js";
+import { saveTask , onGetTasks, deleteTask, getTask, updateTask, getTimestamp, getTasksOfProject } from "./firebase.js";
 
 const taskForm = document.getElementById('task-form');
 const taskTableBody = document.getElementById('task-table-body');
@@ -9,7 +9,12 @@ let id = ''
 
 //Get tasks real time
 window.addEventListener('DOMContentLoaded', async () => {
-    onGetTasks((querySnapshot) => {
+    let projectCollection = 'projects/';
+    let projectId = sessionStorage.getItem('projectId');
+    let tasksCollection = '/tasks';
+    let location = projectCollection.concat(projectId, tasksCollection);
+
+    getTasksOfProject(location, (querySnapshot) => {
         taskTableBody.textContent = '';
         
         querySnapshot.forEach(doc => {

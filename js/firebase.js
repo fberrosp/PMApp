@@ -167,6 +167,12 @@ export const onGetTasks = (callback) => {
   onSnapshot(currentData, callback);
 };
 
+export const getTasksOfProject = (location, callback) => {
+  const currentData = query(collection(db, location), orderBy('creationDate', 'desc'))
+  //console.log(currentData)
+  onSnapshot(currentData, callback);
+};
+
 //------------------------------------------------------PROJECTS------------------------------------------------------
 //save project
 export const saveProject = (projectName, projectOwner, description) => {
