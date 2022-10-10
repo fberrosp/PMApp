@@ -149,11 +149,7 @@ export function checkState (){
 
 //------------------------------------------------------TASKS------------------------------------------------------
 //Save task
-export const saveTask = (title, description) => {
-  const creationDate = Timestamp.now()
-  console.log(creationDate)
-  addDoc(collection(db, 'tasks'), { title, description, creationDate })
-}
+export const saveTask = (taskData) => addDoc(collection(db, 'tasks'), taskData);
 
 //edit task
 export const getTask = id => getDoc(doc(db, 'tasks', id));
@@ -162,14 +158,14 @@ export const getTask = id => getDoc(doc(db, 'tasks', id));
 export const deleteTask = id => deleteDoc(doc(db, 'tasks', id));
 
 //update task
-export const updateTask = (id, newFields) => updateDoc(doc(db, 'tasks', id), newFields);
+export const updateTask = (id, taskData) => updateDoc(doc(db, 'tasks', id), taskData);
 
 //TASKS - real time updating
 export const onGetTasks = (callback) => {
   const currentData = query(collection(db, 'tasks'), orderBy('creationDate', 'desc'))
   //console.log(currentData)
   onSnapshot(currentData, callback);
-}
+};
 
 //------------------------------------------------------PROJECTS------------------------------------------------------
 //save project
@@ -196,7 +192,7 @@ export const onGetProjects = (callback) => {
 }
 
 
-
+//------------------------------------------------------OTHER------------------------------------------------------
 
 //getTimestamp
 export const getTimestamp = () => {
