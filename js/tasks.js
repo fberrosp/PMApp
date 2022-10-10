@@ -14,7 +14,6 @@ window.addEventListener('DOMContentLoaded', async () => {
         
         querySnapshot.forEach(doc => {
             const task = doc.data();
-            console.log(task.dueDate)
             const dueDate = task.dueDate.toDate().toString().slice(0, 21);
 
             let row = document.createElement('tr');
@@ -72,7 +71,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                 taskForm['task-title'].value = task.title;
                 taskForm['task-status'].value = task.status;
                 taskForm['task-priority'].value = task.priority;
-                taskForm['task-dueDate'].value = task.dueDate;
+                taskForm['task-dueDate'].valueAsDate = task.dueDate;
 
 
                 editStatus = true;
@@ -109,7 +108,7 @@ taskForm.addEventListener('submit', (e) => {
             title: title.value,
             status: status.value,
             priority: priority.value,
-            dueDate: dueDate.value,
+            dueDate: dueDate.valueAsDate,
             lastEdit: getTimestamp()
         }
 
