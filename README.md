@@ -6,6 +6,9 @@
 - [x] Google login
 - [x] Auth on-state-change
 - [ ] Facebook login
+- [ ] Retype password
+- [ ] Password strength
+- [ ] Verify email
 - [ ] Two-factor authentication
 - [ ] Captcha
 
