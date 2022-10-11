@@ -1,10 +1,12 @@
 # Issue Tracking System - Features
 
-## Authentication
+## Authentication & Authorization
 - [x] Firebase api
 - [x] New user registration
 - [x] Google login
 - [x] Auth on-state-change
+- [ ] Implement roles (admin, dev, demo)
+- [ ] Specify permissions for writing and deleting projects/tasks
 - [ ] Facebook login
 - [ ] Retype password
 - [ ] Password strength
@@ -21,7 +23,6 @@
 - [x] Filter tasks/projects by creation date
 - [ ] Advanced filtering
 - [x] Delete projects/tasks
-- [ ] Specify permissions for writing and deleting projects/tasks
 - [ ] Associate users with projects/tasks
 - [ ] Associate organizations with projects
 
