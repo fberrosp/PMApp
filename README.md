@@ -39,6 +39,6 @@
 - [ ] Breadcrumbs for tasks and projects
 - [ ] Generate HTML with Javascript (header, footer, navbar, etc...)
 
-## Other 
-- [~] SRS documentation
+## Other
+- [ ] SRS documentation
 - [ ] Implement MVC architectural pattern
