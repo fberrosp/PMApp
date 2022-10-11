@@ -1,11 +1,12 @@
 # Issue Tracking System
 
-## Authentication & Authorization
+## Authentication & authorization
 - [x] Firebase api
 - [x] New user registration
 - [x] Google login
 - [x] Auth on-state-change
 - [ ] Implement roles (admin, dev, demo)
+- [ ] Session timeouts
 - [ ] Specify permissions for writing and deleting projects/tasks
 - [ ] Facebook login
 - [ ] Retype password
