@@ -40,3 +40,4 @@
 
 ## Other 
 - [~] SRS documentation
+- [ ] Implement MVC architectural pattern
