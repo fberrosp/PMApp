@@ -5,7 +5,7 @@ const projectTableBody = document.getElementById('project-table-body');
 const projectRowData = document.createDocumentFragment();
 
 let editStatus = false;
-let id = ''
+let id = '';
 
 //Get projects real time -> table version
 window.addEventListener('DOMContentLoaded', async () => {
@@ -14,36 +14,37 @@ window.addEventListener('DOMContentLoaded', async () => {
 
         querySnapshot.forEach(doc => {
             const project = doc.data();
-            const createDate = project.creationDate.toDate().toString().slice(0, 21)
+            const createDate = project.creationDate.toDate().toString().slice(0, 21);
             let lastDate;
             if (project.lastEdit != null) {
-                lastDate = project.lastEdit.toDate().toString().slice(0, 21)
+                lastDate = project.lastEdit.toDate().toString().slice(0, 21);
             } else {
-                lastDate = "No edits"
+                lastDate = "No edits";
             }
 
-            let row = document.createElement('tr');
-            let projectName = document.createElement('th');
-            let projectOwner = document.createElement('td');
-            let creationDate = document.createElement('td');
-            let lastEdit = document.createElement('td');
-            let projectTasks = document.createElement('td');
-            let projectTasksButton = document.createElement('button');
-            let editProject = document.createElement('td');
-            let editProjectButton = document.createElement('button');
-            let deleteProject = document.createElement('td');
-            let deleteProjectButton = document.createElement('button');
+            const row = document.createElement('tr');
 
+            const projectName = document.createElement('th');
             projectName.textContent = project.projectName;
+
+            const projectOwner = document.createElement('td');
             projectOwner.textContent = project.projectOwner;
+
+            const creationDate = document.createElement('td');
             creationDate.textContent = createDate;
+
+            const lastEdit = document.createElement('td');
             lastEdit.textContent = lastDate;
 
+            const projectTasks = document.createElement('td');
+            const projectTasksButton = document.createElement('button');
             projectTasks.appendChild(projectTasksButton);
             projectTasksButton.setAttribute('data-id', doc.id);
             projectTasksButton.classList.add('btn', 'btn-primary', 'btn-projectTask');
             projectTasksButton.textContent = 'Tasks';
 
+            const editProject = document.createElement('td');
+            const editProjectButton = document.createElement('button');
             editProject.appendChild(editProjectButton);
             editProjectButton.setAttribute('data-id', doc.id);
             editProjectButton.setAttribute('data-bs-toggle', 'modal');
@@ -51,6 +52,8 @@ window.addEventListener('DOMContentLoaded', async () => {
             editProjectButton.classList.add('btn', 'btn-secondary', 'btn-edit');
             editProjectButton.textContent = 'Edit';
 
+            const deleteProject = document.createElement('td');
+            const deleteProjectButton = document.createElement('button');
             deleteProject.appendChild(deleteProjectButton);
             deleteProjectButton.setAttribute('data-id', doc.id);
             deleteProjectButton.classList.add('btn', 'btn-danger', 'btn-delete');
@@ -66,7 +69,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 
             projectRowData.appendChild(row);
             projectTableBody.appendChild(projectRowData);
-            
         });
 
         //task project
@@ -111,9 +113,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 projectForm.addEventListener('submit', (e) => {
     e.preventDefault()
 
-    const projectName = projectForm['project-title']
-    const projectOwner = projectForm['project-owner']
-    const description = projectForm['project-description']
+    const projectName = projectForm['project-title'];
+    const projectOwner = projectForm['project-owner'];
+    const description = projectForm['project-description'];
     
     if (!editStatus) {
         saveProject(projectName.value, projectOwner.value, description.value);
@@ -126,7 +128,7 @@ projectForm.addEventListener('submit', (e) => {
         }
         updateProject(id, newFields);
         editStatus = false;
-        projectForm['btn-project-save'].textContent = 'Save'
+        projectForm['btn-project-save'].textContent = 'Save';
     }
-    projectForm.reset()
+    projectForm.reset();
 });
