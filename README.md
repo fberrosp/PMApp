@@ -1,4 +1,4 @@
-# Issue Tracking System - Features
+# Issue Tracking System
 
 ## Authentication & Authorization
 - [x] Firebase api
@@ -37,3 +37,6 @@
 - [ ] Drag and drop card view
 - [ ] Breadcrumbs for tasks and projects
 - [ ] Generate HTML with Javascript (header, footer, navbar, etc...)
+
+## Other 
+- [~] SRS documentation
