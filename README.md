@@ -13,6 +13,12 @@
 - [x] Create projects
 - [ ] Create epics for a group of tasks
 - [x] Create tasks
+- [x] Read projects and tasks (table view)
+- [x] Edit projects and tasks
+- [x] Filter tasks/projects by creation date
+- [ ] Advanced filtering
+- [x] Delete projects/tasks
+- [ ] Specify permissions for writing and deleting projects/tasks
 - [ ] Associate users with projects/tasks
 - [ ] Associate organizations with projects
 
