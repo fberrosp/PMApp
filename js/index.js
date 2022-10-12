@@ -22,7 +22,7 @@ const sessionController = document.createElement('script');
 sessionController.src = 'controllers/sessionController.js'
 
 //scriptsContainer.appendChild(headScript);
-scriptsContainer.appendChild(sidebarScript);
+//scriptsContainer.appendChild(sidebarScript);
 scriptsContainer.appendChild(bootstrapScript);
 scriptsContainer.appendChild(sessionController);
 
