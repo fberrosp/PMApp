@@ -10,7 +10,8 @@
     <meta name="author" content="">
 
     <!-- Bootstrap-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -233,8 +234,7 @@
                                 </h6>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_1.svg"
-                                            alt="...">
+                                        <img class="rounded-circle" src="img/undraw_profile_1.svg" alt="...">
                                         <div class="status-indicator bg-success"></div>
                                     </div>
                                     <div class="font-weight-bold">
@@ -245,8 +245,7 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_2.svg"
-                                            alt="...">
+                                        <img class="rounded-circle" src="img/undraw_profile_2.svg" alt="...">
                                         <div class="status-indicator"></div>
                                     </div>
                                     <div>
@@ -257,8 +256,7 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_3.svg"
-                                            alt="...">
+                                        <img class="rounded-circle" src="img/undraw_profile_3.svg" alt="...">
                                         <div class="status-indicator bg-warning"></div>
                                     </div>
                                     <div>
@@ -290,8 +288,7 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -332,26 +329,57 @@
                     </div>
 
                     <!--Display Projects-->
-                    <div class="container p-4">
+                    <div class="container p-4 display-projects">
                         <div class="row">
                             <div class="col-md-6">
-                            <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createProjectModal">Create Project</button>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#createProjectModal">Create Project</button>
                             </div>
 
                             <table class="table">
                                 <thead>
-                                  <tr>
-                                    <th scope="col">Project</th>
-                                    <th scope="col">Owner</th>
-                                    <th scope="col">Created</th>
-                                    <th scope="col">Last Edit</th>
-                                    <th scope="col">Tasks</th>
-                                    <th scope="col">Edit</th>
-                                    <th scope="col">Delete</th>
-                                  </tr>
+                                    <tr>
+                                        <th scope="col">Project</th>
+                                        <th scope="col">Owner</th>
+                                        <th scope="col">Created</th>
+                                        <th scope="col">Last Edit</th>
+                                        <th scope="col">Tasks</th>
+                                        <th scope="col">Edit</th>
+                                        <th scope="col">Delete</th>
+                                    </tr>
                                 </thead>
                                 <tbody id="project-table-body">
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </div>
+
+                    <!--Display Project Tasks-->
+                    <div class="container p-4 display-project-tasks" style="display: none">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#createTaskModal">Create Task</button>
+                            </div>
+
+                            <div class="col-md-6" id="tasks-container"></div>
+
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Task</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Priority</th>
+                                        <th scope="col">Due Date</th>
+                                        <th scope="col">Edit</th>
+                                        <th scope="col">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="task-table-body">
                                 </tbody>
                             </table>
 
@@ -387,7 +415,8 @@
     </a>
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -406,7 +435,8 @@
     </div>
 
     <!--Create Project Modal -->
-    <div class="modal fade" id="createProjectModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="createProjectModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -420,11 +450,49 @@
                         <input class="form-control mb-3" type="text" placeholder="project-owner" id="project-owner">
 
                         <label for="description">Description:</label>
-                        <textarea class="form-control mb-3" id="project-description" rows="3" placeholder="Project Description"></textarea>
+                        <textarea class="form-control mb-3" id="project-description" rows="3"
+                            placeholder="Project Description"></textarea>
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             <button class="btn btn-primary" id="btn-project-save">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Create Task Modal -->
+    <div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Create Task</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="task-form">
+                        <label for="title">Task Information:</label>
+                        <input class="form-control mb-3" type="text" placeholder="task-title" id="task-title">
+                        <select class="form-select mb-3" aria-label="Select Task Status" id="task-status">
+                            <option value="" selected disabled>--Status--</option>
+                            <option value="0">Backlog</option>
+                            <option value="1">To-do</option>
+                            <option value="2">In progress</option>
+                            <option value="3">Completed</option>
+                        </select>
+                        <select class="form-select mb-3" aria-label="Select Priority" id="task-priority">
+                            <option value="" selected disabled>--Priority--</option>
+                            <option value="3">Low</option>
+                            <option value="2">Medium</option>
+                            <option value="1">High</option>
+                        </select>
+                        <input class="form-control mb-3" type="date" id="task-dueDate">
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button class="btn btn-primary" id="btn-task-save">Save</button>
                         </div>
                     </form>
                 </div>
@@ -442,7 +510,8 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
-    <script src="js/index.js"></script>
+    <!--<script src="js/index.js"></script>-->
+    <script type="module" src="js/testMVC.js"></script>
 
 </body>
 

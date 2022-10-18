@@ -20,7 +20,6 @@ if (projectForm !== null){
     };
     
     async function displayProjects() {
-        console.log('in displayProjects function')
         onGetProjects((querySnapshot) => {
             projectTableBody.textContent = '';
     

@@ -7,7 +7,6 @@ projectsScript.type = 'module';
 projectsScript.src = 'views/projects.js';
 
 //(epics script)
-
 const tasksScript = document.createElement('script');
 tasksScript.type = 'module';
 tasksScript.src = 'views/tasks.js';
@@ -21,9 +20,9 @@ const firebaseScript = document.createElement('script');
 firebaseScript.type = 'module';
 firebaseScript.src = 'models/firebase.js';
 
-scriptsSessionContainer.appendChild(projectsScript);
+//scriptsSessionContainer.appendChild(projectsScript);
 scriptsSessionContainer.appendChild(tasksScript);
-scriptsSessionContainer.appendChild(authScript);
+//scriptsSessionContainer.appendChild(authScript);
 scriptsSessionContainer.appendChild(firebaseScript);
 
 pageSessionBody.appendChild(scriptsSessionContainer);
