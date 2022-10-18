@@ -15,47 +15,25 @@ export class Model {
       })
   }
 
-  onGetProjects(callback) {
-    const currentData = query(collection(appController.appSession.db, 'projects'), orderBy('creationDate', 'desc'))
-    //console.log(currentData)
-    onSnapshot(currentData, callback);
+  saveDocument(data, location){
+    addDoc(collection(appController.appSession.db, location), data);
   }
 
-  saveProject(saveFields) {
-    addDoc(collection(appController.appSession.db, 'projects'), saveFields)
-  }
-
-  async getProject(id) {
-    await getDoc(doc(appController.appSession.db, 'projects', id));
-  }
-
-  deleteProject(id) {
-    deleteDoc(doc(appController.appSession.db, 'projects', id));
-  }
-
-  updateProject(id, newFields) {
-    updateDoc(doc(appController.appSession.db, 'projects', id), newFields);
-  }
-
-  getTasksofProjects(location, callback) {
-    const currentData = query(collection(appController.appSession.db, location), orderBy('creationDate', 'desc'))
-    //console.log(currentData)
-    onSnapshot(currentData, callback);
-  };
-
-  deleteTask(id) {
-    deleteDoc(doc(appController.appSession.db, location, id));
-  }
-
-  async getTask(id, location) {
+  async getDocument(id, location){
     await getDoc(doc(appController.appSession.db, location, id));
   }
 
-  saveTask(taskData, location) {
-    addDoc(collection(appController.appSession.db, location), taskData);
+  deleteDocument(id, location){
+    deleteDoc(doc(appController.appSession.db, location, id));
   }
 
-  updateTask(id, taskData, location) {
-    updateDoc(doc(appController.appSession.db, location, id), taskData);
+  updateDocument(id, data, location){
+    updateDoc(doc(appController.appSession.db, location, id), data);
   }
+
+  getDocumentSnapshot(location, callback){
+    const currentData = query(collection(appController.appSession.db, location), orderBy('creationDate', 'desc'));
+    onSnapshot(currentData, callback)
+  }
+
 }

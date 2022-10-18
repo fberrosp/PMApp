@@ -90,9 +90,10 @@ export class View {
       const projectRowData = document.createDocumentFragment();
       let editStatus = false;
       let id = '';
+      const location = 'projects'
   
       if (projectForm !== null) {
-        appController.callOnGetProjects((querySnapshot) => {
+        appController.callGetDocumentSnapshot(location, (querySnapshot) => {
           projectTableBody.textContent = '';
   
           querySnapshot.forEach(doc => {
@@ -170,7 +171,7 @@ export class View {
           const btnsDelete = projectTableBody.querySelectorAll(".btn-delete");
           btnsDelete.forEach(btn => {
             btn.addEventListener('click', ({ target: { dataset } }) => {
-              appController.callDeleteProject(dataset.id);
+              appController.callDeleteDocument(dataset.id, location);
             });
           });
   
@@ -178,7 +179,7 @@ export class View {
           const btnsEdit = projectTableBody.querySelectorAll(".btn-edit");
           btnsEdit.forEach(btn => {
             btn.addEventListener('click', ({ target: { dataset } }) => {
-              const doc = appController.callGetProject(dataset.id);
+              const doc = appController.callGetDocument(dataset.id, location);
               const project = doc.data();
   
               projectForm['project-title'].value = project.projectName;
@@ -207,7 +208,7 @@ export class View {
               description: description.value,
               creationDate: Timestamp.now()
             }
-            appController.callSaveProject(saveFields);
+            appController.callSaveDocument(saveFields, location);
           } else {
             const newFields = {
               projectName: projectName.value,
@@ -215,7 +216,7 @@ export class View {
               description: description.value,
               lastEdit: Timestamp.now()
             }
-            appController.callUpdateProject(id, newFields);
+            appController.callUpdateDocument(id, newFields, location);
             editStatus = false;
             projectForm['btn-project-save'].textContent = 'Save';
           }
@@ -240,7 +241,7 @@ export class View {
       let tasksCollection = '/tasks';
       let location = projectCollection.concat(projectId, tasksCollection);
   
-      appController.callGetTasksOfProjects(location, (querySnapshot) => {
+      appController.callGetDocumentSnapshot(location, (querySnapshot) => {
         taskTableBody.textContent = '';
         querySnapshot.forEach(doc => {
           const task = doc.data();
@@ -287,7 +288,7 @@ export class View {
         const btnsDelete = taskTableBody.querySelectorAll(".btn-delete")
         btnsDelete.forEach(btn => {
           btn.addEventListener('click', ({ target: { dataset } }) => {
-            appController.callDeleteTask(dataset.id, location)//COULD BE WRONG
+            appController.callDeleteDocument(dataset.id, location)
           })
         })
   
@@ -295,7 +296,7 @@ export class View {
         const btnsEdit = taskTableBody.querySelectorAll(".btn-edit")
         btnsEdit.forEach(btn => {
           btn.addEventListener('click', ({ target: { dataset } }) => {
-            const doc = appController.callGetTask(dataset.id, location);//SAME AS ABOVE^^
+            const doc = appController.callGetDocument(dataset.id, location);
             const task = doc.data();
   
             taskForm['task-title'].value = task.title;
@@ -326,11 +327,11 @@ export class View {
             title: title.value,
             status: status.value,
             priority: priority.value,
-            dueDate: dueDate.value,
+            dueDate: dueDate.valueAsDate,
             creationDate: Timestamp.now()
           }
   
-          appController.callSaveTask(taskData, location);
+          appController.callSaveDocument(taskData, location);
         } else {
           const taskData = {
             title: title.value,
@@ -340,7 +341,7 @@ export class View {
             lastEdit: Timestamp.now()
           }
   
-          appController.callUpdateTask(id, taskData, location);
+          appController.callUpdateDocument(id, taskData, location);
           editStatus = false;
           taskForm['btn-task-save'].textContent = 'Save';
         }

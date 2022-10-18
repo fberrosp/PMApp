@@ -19,7 +19,6 @@ export class Session {
       this.auth = getAuth(app);
       this.db = getFirestore();
       this.googleProvider = new GoogleAuthProvider();
-      this.init();
     }
   
     init() {

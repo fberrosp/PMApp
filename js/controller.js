@@ -46,47 +46,27 @@ class Controller {
         this.appView.init();
     }
 
-    //Projects
-    callOnGetProjects(callback) {
-        this.appModel.onGetProjects(callback);
+    //CRUD operations
+    callSaveDocument(data, location){
+        this.appModel.saveDocument(data, location);
     }
 
-    callSaveProject(saveFields) {
-        this.appModel.saveProject(saveFields);
+    callGetDocument(id, location){
+        this.appModel.getDocument(id, location);
     }
 
-    callGetProject(id) {
-        this.appModel.getProject(id);
+    callDeleteDocument(id, location){
+        this.appModel.deleteDocument(id, location);
     }
 
-    callDeleteProject(id) {
-        this.appModel.deleteProject(id);
+    callUpdateDocument(id, data, location){
+        this.appModel.updateDocument(id, data, location);
     }
 
-    callUpdateProject(id, newFields) {
-        this.appModel.updateProject(id, newFields);
+    callGetDocumentSnapshot(location, callback){
+        this.appModel.getDocumentSnapshot(location, callback);
     }
 
-    //ProjectTasks
-    callGetTasksOfProjects(location, callback) {
-        this.appModel.getTasksofProjects(location, callback);
-    }
-
-    callDeleteTask(id, location) {
-        this.appModel.deleteTask(id, location);
-    }
-
-    callGetTask(id, location) {
-        this.appModel.getTask(id, location);
-    }
-
-    callSaveTask(taskData, location) {
-        this.appModel.saveTask(taskData, location)
-    }
-
-    callUpdateTask(id, taskData, location) {
-        this.appModel.updateTask(id, taskData, location)
-    }
 
 }
 
