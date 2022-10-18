@@ -37,7 +37,6 @@
 - [x] Bootstrap design
 - [ ] Drag and drop card view
 - [ ] Breadcrumbs for tasks and projects
-- [ ] Generate HTML with Javascript (header, footer, navbar, etc...)
 
 ## Other
 - [ ] SRS documentation
