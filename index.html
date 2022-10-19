@@ -24,7 +24,7 @@
 
 </head>
 
-<body id="page-top">
+<body id="index-page">
 
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -33,7 +33,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center home-link" href="index.html">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-bug"></i>
                 </div>
@@ -45,7 +45,7 @@
 
             <!-- Nav Item - Home -->
             <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link home-link" href="index.html">
                     <i class="fas fa-fw fa-home"></i>
                     <span>Home</span></a>
             </li>
@@ -60,14 +60,14 @@
 
             <!-- Nav Item - Role Assignments -->
             <li class="nav-item">
-                <a class="nav-link" href="roleAssignments.html">
+                <a class="nav-link" id="roleAssignments-link" href="roleAssignments.html">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Role Assignments</span></a>
             </li>
 
             <!-- Nav Item - Project Teams -->
             <li class="nav-item">
-                <a class="nav-link" href="projectTeams.html">
+                <a class="nav-link" id="projectTeams-link" href="projectTeams.html">
                     <i class="fas fa-fw fa-user-plus"></i>
                     <span>Project Teams</span></a>
             </li>
@@ -77,26 +77,26 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Manage Projects
+                Portfolio
             </div>
 
             <!-- Nav Item - Projects -->
             <li class="nav-item">
-                <a class="nav-link" href="projects.html">
+                <a class="nav-link" id="projects-link" href="projects.html">
                     <i class="fas fa-fw fa-briefcase"></i>
                     <span>Projects</span></a>
             </li>
 
             <!-- Nav Item - Epics -->
             <li class="nav-item">
-                <a class="nav-link" href="epics.html">
+                <a class="nav-link" id="epics-link" href="epics.html">
                     <i class="fas fa-fw fa-folder-open"></i>
                     <span>Epics</span></a>
             </li>
 
             <!-- Nav Item - Tasks -->
             <li class="nav-item">
-                <a class="nav-link" href="tasks.html">
+                <a class="nav-link" id="tasks-link" href="tasks.html">
                     <i class="fas fa-fw fa-file"></i>
                     <span>Tasks</span></a>
             </li>
@@ -329,7 +329,7 @@
                     </div>
 
                     <!--Display Projects-->
-                    <div class="container p-4 display-projects">
+                    <div class="container p-4" id="display-projects">
                         <div class="row">
                             <div class="col-md-6">
                                 <!-- Button trigger modal -->
@@ -358,7 +358,7 @@
                     </div>
 
                     <!--Display Project Tasks-->
-                    <div class="container p-4 display-project-tasks" style="display: none">
+                    <div class="container p-4" id="display-project-tasks" style="display: none">
                         <div class="row">
                             <div class="col-md-6 mb-4">
                                 <!-- Button trigger modal -->
@@ -510,8 +510,7 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
-    <!--<script src="js/index.js"></script>-->
-    <script type="module" src="js/controller.js"></script>
+    <script src="js/index.js" id="custom-scripts"></script>
 
 </body>
 

@@ -89,7 +89,7 @@ export class Session {
           const firstName = user.displayName.split(" ")[0]
           const lastName = user.displayName.split(" ")[1]
           appController.callSaveUserData(user, firstName, lastName)
-          console.log('gogole signin')
+          console.log('Google sign-in success!')
           // ...
         }).catch((error) => {
           // Handle Errors here.
@@ -99,6 +99,7 @@ export class Session {
           const email = error.customData.email;
           // The AuthCredential type that was used.
           const credential = GoogleAuthProvider.credentialFromError(error);
+          console.log(errorCode + errorMessage)
           // ...
         });
     }

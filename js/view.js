@@ -3,8 +3,6 @@ import { appController } from "./controller.js"
 
 export class View {
     constructor() {
-      this.newUserData = {};
-      this.existingUserData = {};
     }
   
     init() {
@@ -23,13 +21,13 @@ export class View {
           const lastName = document.querySelector('#signup-LastName').value;
           const email = document.querySelector('#signup-Email').value;
           const password = document.querySelector('#signup-Password').value;
-          this.newUserData = {
+          const newUserData = {
             email: email,
             firstName: firstName,
             lastName: lastName,
             password: password
           }
-          appController.callRegisterUser(this.newUserData);
+          appController.callRegisterUser(newUserData);
           signupForm.reset();
         })
       }
@@ -50,11 +48,11 @@ export class View {
           e.preventDefault();
           const email = document.querySelector('#login-Email').value;
           const password = document.querySelector('#login-Password').value;
-          this.existingUserData = {
+          const existingUserData = {
             email: email,
             password: password
           }
-          appController.callUserLogin(this.existingUserData);
+          appController.callUserLogin(existingUserData);
           loginForm.reset();
         })
       }
@@ -65,9 +63,8 @@ export class View {
       if (window.location.toString().includes('login.html') || window.location.toString().includes('register.html')) {
         window.location.href = 'index.html'
       }
-  
-      //display projects (dashboard in the future)
-      this.displayProjects();
+      
+      this.sidebarLinks();
   
       //listen to logout
       const logout = document.querySelector('#logout-button');
@@ -78,10 +75,50 @@ export class View {
         })
       }
     }
+
+    sidebarLinks(){
+      //redirect to respective methods if clicking on sidebar items
+      const currentPage = document.body.id;
+      switch(currentPage){
+        case 'index-page':
+          this.displayDashboard();
+          break;
+        case 'roleAssignments-page':
+          this.displayRoleAssignments();
+          break;
+        case 'projectTeams-page':
+          this.displayProjectTeams();
+          break;
+        case 'projects-page':
+          this.displayProjects();
+          break;
+        case 'epics-page':
+          this.displayEpics();
+          break;
+        case 'tasks-page':
+          this.displayTasks();
+          break;
+      }
+    }
+
+    displayDashboard(){
+      //this.sidebarLinks();
+      //render dashboard
+      //google charts
+      console.log('dashboard');
+    }
+
+    displayRoleAssignments(){
+      console.log('roleAssignments');
+    }
+
+    displayProjectTeams(){
+      console.log('projectTeams');
+    }
   
     displayProjects() {
-      const displayProjects = document.querySelector('.display-projects');
-      const displayProjectTasks = document.querySelector('.display-project-tasks');
+      const displayProjects = document.getElementById('display-projects');
+      const displayProjectTasks = document.getElementById('display-project-tasks');
       displayProjects.style.display = 'block'
       displayProjectTasks.style.display = 'none'
   
@@ -224,10 +261,10 @@ export class View {
         });
       }
     }
-  
+
     displayProjectTasks(projectId) {
-      const displayProjects = document.querySelector('.display-projects');
-      const displayProjectTasks = document.querySelector('.display-project-tasks');
+      const displayProjects = document.getElementById('display-projects');
+      const displayProjectTasks = document.getElementById('display-project-tasks');
       displayProjects.style.display = 'none'
       displayProjectTasks.style.display = 'block'
       //window.location.href = 'tasks.html'
@@ -348,6 +385,13 @@ export class View {
         taskForm.reset()
       })
     }
-  
+
+    displayEpics(){
+      console.log('epics');
+    }
+
+    displayTasks(){
+      console.log('tasks');
+    }
   }
   

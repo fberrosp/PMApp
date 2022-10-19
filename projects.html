@@ -22,7 +22,7 @@
 
 </head>
 
-<body id="page-top">
+<body id="projects-page">
 
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -31,7 +31,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center home-link" href="index.html">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-bug"></i>
                 </div>
@@ -43,7 +43,7 @@
 
             <!-- Nav Item - Home -->
             <li class="nav-item">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link home-link" href="index.html">
                     <i class="fas fa-fw fa-home"></i>
                     <span>Home</span></a>
             </li>
@@ -58,14 +58,14 @@
 
             <!-- Nav Item - Role Assignments -->
             <li class="nav-item">
-                <a class="nav-link" href="roleAssignments.html">
+                <a class="nav-link" id="roleAssignments-link" href="roleAssignments.html">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Role Assignments</span></a>
             </li>
 
             <!-- Nav Item - Project Teams -->
             <li class="nav-item">
-                <a class="nav-link" href="projectTeams.html">
+                <a class="nav-link" id="projectTeams-link" href="projectTeams.html">
                     <i class="fas fa-fw fa-user-plus"></i>
                     <span>Project Teams</span></a>
             </li>
@@ -75,26 +75,26 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Manage Projects
+                Portfolio
             </div>
 
             <!-- Nav Item - Projects -->
             <li class="nav-item active">
-                <a class="nav-link" href="projects.html">
+                <a class="nav-link" id="projects-link" href="projects.html">
                     <i class="fas fa-fw fa-briefcase"></i>
                     <span>Projects</span></a>
             </li>
 
             <!-- Nav Item - Epics -->
             <li class="nav-item">
-                <a class="nav-link" href="epics.html">
+                <a class="nav-link" id="epics-link" href="epics.html">
                     <i class="fas fa-fw fa-folder-open"></i>
                     <span>Epics</span></a>
             </li>
 
             <!-- Nav Item - Tasks -->
             <li class="nav-item">
-                <a class="nav-link" href="tasks.html">
+                <a class="nav-link" id="tasks-link" href="tasks.html">
                     <i class="fas fa-fw fa-file"></i>
                     <span>Tasks</span></a>
             </li>
@@ -232,8 +232,7 @@
                                 </h6>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_1.svg"
-                                            alt="...">
+                                        <img class="rounded-circle" src="img/undraw_profile_1.svg" alt="...">
                                         <div class="status-indicator bg-success"></div>
                                     </div>
                                     <div class="font-weight-bold">
@@ -244,8 +243,7 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_2.svg"
-                                            alt="...">
+                                        <img class="rounded-circle" src="img/undraw_profile_2.svg" alt="...">
                                         <div class="status-indicator"></div>
                                     </div>
                                     <div>
@@ -256,8 +254,7 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_3.svg"
-                                            alt="...">
+                                        <img class="rounded-circle" src="img/undraw_profile_3.svg" alt="...">
                                         <div class="status-indicator bg-warning"></div>
                                     </div>
                                     <div>
@@ -289,8 +286,7 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -324,7 +320,70 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Blank Page</h1>
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">PROJECTS</h1>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                    </div>
+
+                    <!--Display Projects-->
+                    <div class="container p-4" id="display-projects">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#createProjectModal">Create Project</button>
+                            </div>
+
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Project</th>
+                                        <th scope="col">Owner</th>
+                                        <th scope="col">Created</th>
+                                        <th scope="col">Last Edit</th>
+                                        <th scope="col">Tasks</th>
+                                        <th scope="col">Edit</th>
+                                        <th scope="col">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="project-table-body">
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </div>
+
+                    <!--Display Project Tasks-->
+                    <div class="container p-4" id="display-project-tasks" style="display: none">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#createTaskModal">Create Task</button>
+                            </div>
+
+                            <div class="col-md-6" id="tasks-container"></div>
+
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Task</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Priority</th>
+                                        <th scope="col">Due Date</th>
+                                        <th scope="col">Edit</th>
+                                        <th scope="col">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="task-table-body">
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </div>
 
                 </div>
                 <!-- /.container-fluid -->
@@ -383,6 +442,72 @@
         </div>
     </div>
 
+    <!--Create Project Modal -->
+    <div class="modal fade" id="createProjectModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Create Project</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="project-form">
+                        <label for="title">Project Information:</label>
+                        <input class="form-control mb-3" type="text" placeholder="project-title" id="project-title">
+                        <input class="form-control mb-3" type="text" placeholder="project-owner" id="project-owner">
+
+                        <label for="description">Description:</label>
+                        <textarea class="form-control mb-3" id="project-description" rows="3"
+                            placeholder="Project Description"></textarea>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button class="btn btn-primary" id="btn-project-save">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Create Task Modal -->
+    <div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Create Task</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="task-form">
+                        <label for="title">Task Information:</label>
+                        <input class="form-control mb-3" type="text" placeholder="task-title" id="task-title">
+                        <select class="form-select mb-3" aria-label="Select Task Status" id="task-status">
+                            <option value="" selected disabled>--Status--</option>
+                            <option value="0">Backlog</option>
+                            <option value="1">To-do</option>
+                            <option value="2">In progress</option>
+                            <option value="3">Completed</option>
+                        </select>
+                        <select class="form-select mb-3" aria-label="Select Priority" id="task-priority">
+                            <option value="" selected disabled>--Priority--</option>
+                            <option value="3">Low</option>
+                            <option value="2">Medium</option>
+                            <option value="1">High</option>
+                        </select>
+                        <input class="form-control mb-3" type="date" id="task-dueDate">
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button class="btn btn-primary" id="btn-task-save">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -392,7 +517,7 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
-    <script src="js/index.js"></script>
+    <script src="js/index.js" id="custom-scripts"></script>
 
 </body>
 
