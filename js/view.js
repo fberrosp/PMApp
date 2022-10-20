@@ -86,6 +86,10 @@ export class View {
           appController.callUserLogout();
         })
       }
+
+      //display current user
+      const currentUserTag = document.getElementById('display-current-user');
+      currentUserTag.textContent = appController.appSession.user.displayName;
     }
 
     sidebarLinks(){

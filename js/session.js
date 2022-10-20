@@ -33,11 +33,13 @@ export class Session {
           // https://firebase.google.com/docs/reference/js/firebase.User
           const uid = user.uid;
           console.log('Auth: signed in! CLASS!!', user.email)
+          this.user = user;
           appController.userAuthenticated();
           // ...
         } else {
           // User is signed out
           // ...
+          this.user = null;
           appController.userNotAuthenticated();
           console.log('Auth: signed out! CLASS!!')
         }
