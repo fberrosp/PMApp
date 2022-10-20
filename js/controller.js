@@ -47,44 +47,46 @@ class Controller {
     }
 
     //CRUD operations
-    callSaveDocument(data, location){
+    callSaveDocument(data, location) {
         this.appModel.saveDocument(data, location);
     }
 
-    callGetDocument(id, location){
-        this.appModel.getDocument(id, location);
+    async callGetDocument(id, location) {
+        var testCont = await this.appModel.getDocument(id, location);
+        console.log('contr',testCont);
+        return (testCont);
     }
 
-    callDeleteDocument(id, location){
+    callDeleteDocument(id, location) {
         this.appModel.deleteDocument(id, location);
     }
 
-    callUpdateDocument(id, data, location){
+    callUpdateDocument(id, data, location) {
         this.appModel.updateDocument(id, data, location);
     }
 
-    callGetDocumentSnapshot(location, callback){
+    callGetDocumentSnapshot(location, callback) {
         this.appModel.getDocumentSnapshot(location, callback);
     }
 
     //Navigation
-    callDisplayRoleAssignments(){
+    callDisplayRoleAssignments() {
         this.appView.displayRoleAssignments();
     }
 
-    callDisplayProjectTeams(){
+    callDisplayProjectTeams() {
         this.appView.displayProjectTeams();
     }
 
-    callDisplayProjects(){
+    callDisplayProjects() {
         this.appView.displayProjects();
     }
 
-    callDisplayEpics(){
+    callDisplayEpics() {
         this.appView.displayEpics();
     }
 
-    callDisplayTasks(){
+    callDisplayTasks() {
         this.appView.displayTasks();
     }
 

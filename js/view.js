@@ -1,5 +1,6 @@
 import { Timestamp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
 import { appController } from "./controller.js"
+import { getDoc, doc } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
 
 export class View {
     constructor() {
@@ -133,8 +134,8 @@ export class View {
         appController.callGetDocumentSnapshot(location, (querySnapshot) => {
           projectTableBody.textContent = '';
   
-          querySnapshot.forEach(doc => {
-            const project = doc.data();
+          querySnapshot.forEach(docData => {
+            const project = docData.data();
             const createDate = project.creationDate.toDate().toString().slice(0, 21);
             let lastDate;
             if (project.lastEdit != null) {
@@ -160,14 +161,14 @@ export class View {
             const projectTasks = document.createElement('td');
             const projectTasksButton = document.createElement('button');
             projectTasks.appendChild(projectTasksButton);
-            projectTasksButton.setAttribute('data-id', doc.id);
+            projectTasksButton.setAttribute('data-id', docData.id);
             projectTasksButton.classList.add('btn', 'btn-primary', 'btn-projectTask');
             projectTasksButton.textContent = 'Tasks';
   
             const editProject = document.createElement('td');
             const editProjectButton = document.createElement('button');
             editProject.appendChild(editProjectButton);
-            editProjectButton.setAttribute('data-id', doc.id);
+            editProjectButton.setAttribute('data-id', docData.id);
             editProjectButton.setAttribute('data-bs-toggle', 'modal');
             editProjectButton.setAttribute('data-bs-target', '#createProjectModal');
             editProjectButton.classList.add('btn', 'btn-secondary', 'btn-edit');
@@ -176,7 +177,7 @@ export class View {
             const deleteProject = document.createElement('td');
             const deleteProjectButton = document.createElement('button');
             deleteProject.appendChild(deleteProjectButton);
-            deleteProjectButton.setAttribute('data-id', doc.id);
+            deleteProjectButton.setAttribute('data-id', docData.id);
             deleteProjectButton.classList.add('btn', 'btn-danger', 'btn-delete');
             deleteProjectButton.textContent = 'Delete';
   
@@ -215,17 +216,24 @@ export class View {
           //edit project
           const btnsEdit = projectTableBody.querySelectorAll(".btn-edit");
           btnsEdit.forEach(btn => {
-            btn.addEventListener('click', ({ target: { dataset } }) => {
-              const doc = appController.callGetDocument(dataset.id, location);
-              const project = doc.data();
-  
-              projectForm['project-title'].value = project.projectName;
-              projectForm['project-owner'].value = project.projectOwner;
-              projectForm['project-description'].value = project.description;
-  
-              editStatus = true;
-              id = doc.id;
-              projectForm['btn-project-save'].textContent = 'Update';
+            btn.addEventListener('click',  ({ target: { dataset } }) => {
+              const docData =  appController.callGetDocument(dataset.id, location).then((result) => {
+                console.log("view", result);
+                const project = result.data();
+                
+                projectForm['project-title'].value = project.projectName;
+                projectForm['project-owner'].value = project.projectOwner;
+                projectForm['project-description'].value = project.description;
+    
+                editStatus = true;
+                id = result.id;
+                projectForm['btn-project-save'].textContent = 'Update';
+                //const docData = await getDoc(doc(appController.appSession.db, location, dataset.id));
+              }).catch((err) => {
+                console.log(err);
+              });
+
+
             });
           });
         });
@@ -280,8 +288,8 @@ export class View {
   
       appController.callGetDocumentSnapshot(location, (querySnapshot) => {
         taskTableBody.textContent = '';
-        querySnapshot.forEach(doc => {
-          const task = doc.data();
+        querySnapshot.forEach(docData => {
+          const task = docData.data();
           const dueDate = task.dueDate.toDate().toString().slice(0, 21);
   
           let row = document.createElement('tr');
@@ -299,13 +307,13 @@ export class View {
           taskPriority.textContent = task.priority;
           taskDue.textContent = dueDate;
           editTask.appendChild(editTaskButton);
-          editTaskButton.setAttribute('data-id', doc.id);
+          editTaskButton.setAttribute('data-id', docData.id);
           editTaskButton.setAttribute('data-bs-toggle', 'modal');
           editTaskButton.setAttribute('data-bs-target', '#createTaskModal');
           editTaskButton.classList.add('btn', 'btn-secondary', 'btn-edit');
           editTaskButton.textContent = 'Edit';
           deleteTask.appendChild(deleteTaskButton);
-          deleteTaskButton.setAttribute('data-id', doc.id);
+          deleteTaskButton.setAttribute('data-id', docData.id);
           deleteTaskButton.classList.add('btn', 'btn-primary', 'btn-delete');
           deleteTaskButton.textContent = 'Delete';
   
@@ -333,8 +341,10 @@ export class View {
         const btnsEdit = taskTableBody.querySelectorAll(".btn-edit")
         btnsEdit.forEach(btn => {
           btn.addEventListener('click', ({ target: { dataset } }) => {
-            const doc = appController.callGetDocument(dataset.id, location);
-            const task = doc.data();
+
+            const docData = appController.callGetDocument(dataset.id, location);
+            console.log(docData)
+            const task = docData.data();
   
             taskForm['task-title'].value = task.title;
             taskForm['task-status'].value = task.status;
@@ -343,7 +353,7 @@ export class View {
   
   
             editStatus = true;
-            id = doc.id;
+            id = docData.id;
             taskForm['btn-task-save'].textContent = 'Update';
           })
         })
