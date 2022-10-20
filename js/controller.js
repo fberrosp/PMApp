@@ -67,27 +67,6 @@ class Controller {
         this.appModel.getDocumentSnapshot(location, callback);
     }
 
-    //Navigation
-    callDisplayRoleAssignments() {
-        this.appView.displayRoleAssignments();
-    }
-
-    callDisplayProjectTeams() {
-        this.appView.displayProjectTeams();
-    }
-
-    callDisplayProjects() {
-        this.appView.displayProjects();
-    }
-
-    callDisplayEpics() {
-        this.appView.displayEpics();
-    }
-
-    callDisplayTasks() {
-        this.appView.displayTasks();
-    }
-
 }
 
 export const appController = new Controller(new Session(), new View(), new Model());

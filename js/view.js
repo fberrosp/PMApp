@@ -1,6 +1,5 @@
 import { Timestamp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
 import { appController } from "./controller.js"
-import { getDoc, doc } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
 
 export class View {
     constructor() {
@@ -104,9 +103,6 @@ export class View {
           break;
         case 'projects-page':
           this.displayProjects();
-          break;
-        case 'epics-page':
-          this.displayEpics();
           break;
         case 'tasks-page':
           this.displayTasks();
@@ -398,10 +394,6 @@ export class View {
         }
         taskForm.reset()
       })
-    }
-
-    displayEpics(){
-      console.log('epics');
     }
 
     displayTasks(){
