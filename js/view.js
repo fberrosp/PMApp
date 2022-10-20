@@ -4,6 +4,18 @@ import { getDoc, doc } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-
 
 export class View {
     constructor() {
+      this.statusDict = {
+        0: 'Backlog',
+        1: 'To-do',
+        2: 'In progress',
+        3: 'Completed'
+      }
+
+      this.priorityDict = {
+        1: 'High',
+        2: 'Medium',
+        3: 'Low'
+      }
     }
   
     init() {
@@ -298,8 +310,8 @@ export class View {
           let deleteTaskButton = document.createElement('button');
   
           taskName.textContent = task.title;
-          taskStatus.textContent = task.status;
-          taskPriority.textContent = task.priority;
+          taskStatus.textContent = this.statusDict[task.status];
+          taskPriority.textContent = this.priorityDict[task.priority];
           taskDue.textContent = dueDate;
           editTask.appendChild(editTaskButton);
           editTaskButton.setAttribute('data-id', docData.id);
@@ -364,8 +376,8 @@ export class View {
         if (!editStatus) {
           const taskData = {
             title: title.value,
-            status: status.value,
-            priority: priority.value,
+            status: parseInt(status.value),
+            priority: parseInt(priority.value),
             dueDate: dueDate.valueAsDate,
             creationDate: Timestamp.now()
           }
@@ -374,8 +386,8 @@ export class View {
         } else {
           const taskData = {
             title: title.value,
-            status: status.value,
-            priority: priority.value,
+            status: parseInt(status.value),
+            priority: parseInt(priority.value),
             dueDate: dueDate.valueAsDate,
             lastEdit: Timestamp.now()
           }
