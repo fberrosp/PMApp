@@ -216,22 +216,17 @@ export class View {
           //edit project
           const btnsEdit = projectTableBody.querySelectorAll(".btn-edit");
           btnsEdit.forEach(btn => {
-            btn.addEventListener('click',  ({ target: { dataset } }) => {
-              const docData =  appController.callGetDocument(dataset.id, location).then((result) => {
-                console.log("view", result);
-                const project = result.data();
+            btn.addEventListener('click', async ({ target: { dataset } }) => {
+              const docData = await appController.callGetDocument(dataset.id, location);
+              const project = docData.data();
                 
-                projectForm['project-title'].value = project.projectName;
-                projectForm['project-owner'].value = project.projectOwner;
-                projectForm['project-description'].value = project.description;
-    
-                editStatus = true;
-                id = result.id;
-                projectForm['btn-project-save'].textContent = 'Update';
-                //const docData = await getDoc(doc(appController.appSession.db, location, dataset.id));
-              }).catch((err) => {
-                console.log(err);
-              });
+              projectForm['project-title'].value = project.projectName;
+              projectForm['project-owner'].value = project.projectOwner;
+              projectForm['project-description'].value = project.description;
+  
+              editStatus = true;
+              id = docData.id;
+              projectForm['btn-project-save'].textContent = 'Update';
 
 
             });
@@ -275,7 +270,7 @@ export class View {
       const displayProjectTasks = document.getElementById('display-project-tasks');
       displayProjects.style.display = 'none'
       displayProjectTasks.style.display = 'block'
-      //window.location.href = 'tasks.html'
+
       const taskForm = document.getElementById('task-form');
       const taskTableBody = document.getElementById('task-table-body');
       const taskRowData = document.createDocumentFragment();
@@ -340,17 +335,14 @@ export class View {
         //edit task
         const btnsEdit = taskTableBody.querySelectorAll(".btn-edit")
         btnsEdit.forEach(btn => {
-          btn.addEventListener('click', ({ target: { dataset } }) => {
-
-            const docData = appController.callGetDocument(dataset.id, location);
-            console.log(docData)
+          btn.addEventListener('click', async ({ target: { dataset } }) => {
+            const docData = await appController.callGetDocument(dataset.id, location);
             const task = docData.data();
   
             taskForm['task-title'].value = task.title;
             taskForm['task-status'].value = task.status;
             taskForm['task-priority'].value = task.priority;
             taskForm['task-dueDate'].valueAsDate = task.dueDate;
-  
   
             editStatus = true;
             id = docData.id;

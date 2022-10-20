@@ -51,10 +51,8 @@ class Controller {
         this.appModel.saveDocument(data, location);
     }
 
-    async callGetDocument(id, location) {
-        var testCont = await this.appModel.getDocument(id, location);
-        console.log('contr',testCont);
-        return (testCont);
+    callGetDocument(id, location) {
+        return this.appModel.getDocument(id, location);
     }
 
     callDeleteDocument(id, location) {

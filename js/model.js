@@ -19,10 +19,8 @@ export class Model {
     addDoc(collection(appController.appSession.db, location), data);
   }
 
-  async getDocument(id, location){
-    var test = await getDoc(doc(appController.appSession.db, location, id));
-    console.log(test);
-    return(test);
+  getDocument(id, location){
+    return getDoc(doc(appController.appSession.db, location, id));
   }
 
   deleteDocument(id, location){
