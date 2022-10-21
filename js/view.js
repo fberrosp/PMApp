@@ -304,7 +304,7 @@ export class View {
         taskTableBody.textContent = '';
         querySnapshot.forEach(docData => {
           const task = docData.data();
-          const dueDate = task.dueDate.toDate().toString().slice(0, 21);
+          const dueDate = task.dueDate.toDate().toString().slice(0, 16);
   
           let row = document.createElement('tr');
           let taskName = document.createElement('th');
@@ -377,15 +377,16 @@ export class View {
         const title = taskForm['task-title'];
         const status = taskForm['task-status'];
         const priority = taskForm['task-priority'];
-        const dueDate = taskForm['task-dueDate'];
-  
+        const dueDate = taskForm['task-dueDate'].valueAsDate;
+
+        const dateFix = new Date(dueDate.setHours(dueDate.getHours()+5)); //get rid of the -5 date offset
   
         if (!editStatus) {
           const taskData = {
             title: title.value,
             status: parseInt(status.value),
             priority: parseInt(priority.value),
-            dueDate: dueDate.valueAsDate,
+            dueDate: dateFix,
             creationDate: Timestamp.now()
           }
   
@@ -395,7 +396,7 @@ export class View {
             title: title.value,
             status: parseInt(status.value),
             priority: parseInt(priority.value),
-            dueDate: dueDate.valueAsDate,
+            dueDate: dateFix,
             lastEdit: Timestamp.now()
           }
   
