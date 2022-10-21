@@ -186,13 +186,11 @@
                 <div class="modal-body">
                     <form id="project-form">
                         <label for="title">Project Information:</label>
-                        <input class="form-control mb-3" type="text" placeholder="project-title" id="project-title">
-                        <input class="form-control mb-3" type="text" placeholder="project-owner" id="project-owner">
-
+                        <input class="form-control mb-3" type="text" placeholder="project-title" id="project-title" required>
+                        <input class="form-control mb-3" type="text" placeholder="project-owner" id="project-owner" required>
                         <label for="description">Description:</label>
                         <textarea class="form-control mb-3" id="project-description" rows="3"
-                            placeholder="Project Description"></textarea>
-
+                            placeholder="Project Description" required></textarea>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             <button class="btn btn-primary" id="btn-project-save">Save</button>
@@ -214,22 +212,21 @@
                 <div class="modal-body">
                     <form id="task-form">
                         <label for="title">Task Information:</label>
-                        <input class="form-control mb-3" type="text" placeholder="task-title" id="task-title">
-                        <select class="form-select mb-3" aria-label="Select Task Status" id="task-status">
+                        <input class="form-control mb-3" type="text" placeholder="task-title" id="task-title" required>
+                        <select class="form-select mb-3" aria-label="Select Task Status" id="task-status" required>
                             <option value="" selected disabled>--Status--</option>
                             <option value="0">Backlog</option>
                             <option value="1">To-do</option>
                             <option value="2">In progress</option>
                             <option value="3">Completed</option>
                         </select>
-                        <select class="form-select mb-3" aria-label="Select Priority" id="task-priority">
+                        <select class="form-select mb-3" aria-label="Select Priority" id="task-priority" required>
                             <option value="" selected disabled>--Priority--</option>
                             <option value="3">Low</option>
                             <option value="2">Medium</option>
                             <option value="1">High</option>
                         </select>
-                        <input class="form-control mb-3" type="date" id="task-dueDate">
-
+                        <input class="form-control mb-3" type="date" id="task-dueDate" required>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             <button class="btn btn-primary" id="btn-task-save">Save</button>
