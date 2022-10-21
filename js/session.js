@@ -40,8 +40,8 @@ export class Session {
           // User is signed out
           // ...
           this.user = null;
-          appController.userNotAuthenticated();
           console.log('Auth: signed out! CLASS!!')
+          appController.userNotAuthenticated();
         }
       });
     }

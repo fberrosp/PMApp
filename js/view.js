@@ -19,7 +19,7 @@ export class View {
   
     init() {
       //redirect to login if user is not authenticated
-      if (!window.location.toString().includes('login.html') || !window.location.toString().includes('register.html')) {
+      if (!(window.location.toString().includes('login.html') || window.location.toString().includes('register.html'))) {
         window.location.href = 'login.html'
       }
   
@@ -89,7 +89,12 @@ export class View {
 
       //display current user
       const currentUserTag = document.getElementById('display-current-user');
-      currentUserTag.textContent = appController.appSession.user.displayName;
+      const currentUserText = document.createElement('div');
+      currentUserText.className = 'small';
+      currentUserText.textContent = 'Logged in as: '
+      currentUserTag.appendChild(currentUserText)
+      const completeText = document.createTextNode(appController.appSession.user.displayName);
+      currentUserTag.appendChild(completeText);
     }
 
     sidebarLinks(){
@@ -130,6 +135,8 @@ export class View {
     }
   
     displayProjects() {
+      console.log('projects!');
+
       const displayProjects = document.getElementById('display-projects');
       const displayProjectTasks = document.getElementById('display-project-tasks');
       displayProjects.style.display = 'block'
@@ -256,7 +263,7 @@ export class View {
           if (!editStatus) {
             const saveFields = {
               projectName: projectName.value,
-              projectOwner: projectOwner.vlaue,
+              projectOwner: projectOwner.value,
               description: description.value,
               creationDate: Timestamp.now()
             }

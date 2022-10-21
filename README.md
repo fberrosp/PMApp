@@ -14,6 +14,7 @@
 - [ ] Verify email
 - [ ] Two-factor authentication
 - [ ] Captcha
+- [ ] Write firebase security rules -> try catch redirect back to login
 
 ## CRUD operations
 - [x] Create projects

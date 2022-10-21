@@ -3,8 +3,8 @@ const scriptsContainer = document.createDocumentFragment();
 
 //Bootstrap
 const bootstrapScript = document.createElement('script');
-bootstrapScript.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js';
-bootstrapScript.setAttribute('integrity', 'sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8');
+bootstrapScript.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js';
+bootstrapScript.setAttribute('integrity', 'sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3');
 bootstrapScript.setAttribute('crossorigin', 'anonymous');
 
 //Controller
