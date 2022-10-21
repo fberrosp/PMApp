@@ -73,7 +73,7 @@ export class View {
     indexView() {
       //redirect to index if user is authenticated
       if (window.location.toString().includes('login.html') || window.location.toString().includes('register.html')) {
-        window.location.href = 'index.html'
+        //window.location.href = 'index.html'
       }
       
       this.sidebarLinks();
@@ -89,12 +89,14 @@ export class View {
 
       //display current user
       const currentUserTag = document.getElementById('display-current-user');
-      const currentUserText = document.createElement('div');
-      currentUserText.className = 'small';
-      currentUserText.textContent = 'Logged in as: '
-      currentUserTag.appendChild(currentUserText)
-      const completeText = document.createTextNode(appController.appSession.user.displayName);
-      currentUserTag.appendChild(completeText);
+      if (currentUserTag !== null){
+        const currentUserText = document.createElement('div');
+        currentUserText.className = 'small';
+        currentUserText.textContent = 'Logged in as: '
+        currentUserTag.appendChild(currentUserText)
+        const completeText = document.createTextNode(appController.appSession.user.displayName);
+        currentUserTag.appendChild(completeText);
+      }
     }
 
     sidebarLinks(){

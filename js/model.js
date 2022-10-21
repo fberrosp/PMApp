@@ -9,10 +9,8 @@ export class Model {
       lastName: lastName,
       lastLogin: Timestamp.now()
     };
-    setDoc(doc(appController.appSession.db, 'users', user.uid), userData)
-      .then(() => {
-        console.log('account data saved!')
-      })
+    console.log(userData);
+    return setDoc(doc(appController.appSession.db, 'users', user.uid), userData)
   }
 
   saveDocument(data, location){

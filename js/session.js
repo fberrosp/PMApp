@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"
+import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"
 import { getFirestore } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
 import { appController } from "./controller.js"
 
@@ -32,8 +32,8 @@ export class Session {
           // User is signed in, see docs for a list of available properties
           // https://firebase.google.com/docs/reference/js/firebase.User
           const uid = user.uid;
-          console.log('Auth: signed in! CLASS!!', user.email)
           this.user = user;
+          console.log('Auth: signed in! CLASS!!', user.email)
           appController.userAuthenticated();
           // ...
         } else {
@@ -51,6 +51,15 @@ export class Session {
         .then((userCredential) => {
           // Signed in 
           const user = userCredential.user;
+          updateProfile(this.auth.currentUser, {
+            displayName: newUserData.firstName + " " + newUserData.lastName
+          }).then(() => {
+            console.log('user display name update');
+          }).catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorCode + errorMessage);
+          });
           console.log('account created with email and passowrd')
           //Save user data
           appController.callSaveUserData(user, newUserData.firstName, newUserData.lastName)
