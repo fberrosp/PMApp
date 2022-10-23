@@ -7,9 +7,8 @@ export class Model {
       email: user.email,
       firstName: firstName,
       lastName: lastName,
-      lastLogin: Timestamp.now()
+      creationDate: Timestamp.now()
     };
-    console.log(userData);
     return setDoc(doc(appController.appSession.db, 'users', user.uid), userData)
   }
 

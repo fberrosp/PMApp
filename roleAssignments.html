@@ -107,6 +107,26 @@
                 </div>
             </main>
 
+            <!--CONTENT-->
+
+            <!--Display Users-->
+            <div class="container p-4" id="display-users">
+                <div class="row">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">User</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">Change Role</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!--Footer-->
             <footer class="py-4 bg-light mt-auto">
                 <div class="container my-auto">
@@ -115,6 +135,38 @@
                     </div>
                 </div>
             </footer>
+        </div>
+    </div>
+
+    <!--User Role Modal -->
+    <div class="modal fade" id="user-role-modal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Create Project</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="user-form">
+                        <label for="user-name">User</label>
+                        <input readonly class="form-control-plaintext" type="text" id="user-name">
+                        <label for="user-email">Email</label>
+                        <input readonly class="form-control-plaintext" type="text" id="user-email">
+                        <label for="user-role">Role</label>
+                        <select class="form-select mb-3" aria-label="Select User Role" id="user-role" required>
+                            <option value="" selected disabled>--Role--</option>
+                            <option value="0">Admin</option>
+                            <option value="1">Developer</option>
+                            <option value="2">Viewer</option>
+                        </select>           
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="btn-user-save">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
