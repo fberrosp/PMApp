@@ -233,6 +233,7 @@ export class View {
 
   displayProjects() {
     console.log('projects!');
+    console.log(appController.appSession.user.uid);
 
     const displayProjects = document.getElementById('display-projects');
     const displayProjectTasks = document.getElementById('display-project-tasks');
@@ -266,7 +267,11 @@ export class View {
           projectName.textContent = project.projectName;
 
           const projectOwner = document.createElement('td');
-          projectOwner.textContent = project.projectOwner;
+
+          appController.callGetDocument(project.projectOwner, 'users').then(userData => {
+            const user = userData.data();
+            projectOwner.textContent = user.firstName + ' ' + user.lastName;
+          })
 
           const creationDate = document.createElement('td');
           creationDate.textContent = createDate;
@@ -335,9 +340,11 @@ export class View {
           btn.addEventListener('click', async ({ target: { dataset } }) => {
             const docData = await appController.callGetDocument(dataset.id, location);
             const project = docData.data();
+            const userData = await appController.callGetDocument(project.projectOwner, 'users');
+            const user = userData.data();
 
             projectForm['project-title'].value = project.projectName;
-            projectForm['project-owner'].value = project.projectOwner;
+            projectForm['project-owner'].value = user.firstName + '' + user.lastName;
             projectForm['project-description'].value = project.description;
 
             editStatus = true;
@@ -353,7 +360,6 @@ export class View {
         e.preventDefault()
 
         const projectName = projectForm['project-title'];
-        const projectOwner = projectForm['project-owner'];
         const description = projectForm['project-description'];
         const projectModal = document.getElementById('createProjectModal');
         const modal = bootstrap.Modal.getInstance(projectModal);
@@ -361,16 +367,17 @@ export class View {
         if (!editStatus) {
           const saveFields = {
             projectName: projectName.value,
-            projectOwner: projectOwner.value,
+            projectOwner: appController.appSession.user.uid,
             description: description.value,
+            createdBy: appController.appSession.user.uid,
             creationDate: Timestamp.now()
           }
           appController.callSaveDocument(saveFields, location);
         } else {
           const newFields = {
             projectName: projectName.value,
-            projectOwner: projectOwner.value,
             description: description.value,
+            editedBy: appController.appSession.user.uid,
             lastEdit: Timestamp.now()
           }
           appController.callUpdateDocument(id, newFields, location);
@@ -488,6 +495,7 @@ export class View {
           status: parseInt(status.value),
           priority: parseInt(priority.value),
           dueDate: dateFix,
+          createdBy: appController.appSession.user.uid,
           creationDate: Timestamp.now()
         }
 
@@ -498,6 +506,7 @@ export class View {
           status: parseInt(status.value),
           priority: parseInt(priority.value),
           dueDate: dateFix,
+          editedBy: appController.appSession.user.uid,
           lastEdit: Timestamp.now()
         }
 

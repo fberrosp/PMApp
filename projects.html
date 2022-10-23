@@ -180,14 +180,15 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Create Project</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Project</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="project-form">
-                        <label for="title">Project Information:</label>
+                        <label for="project-title">Project Name</label>
                         <input class="form-control mb-3" type="text" placeholder="project-title" id="project-title" required>
-                        <input class="form-control mb-3" type="text" placeholder="project-owner" id="project-owner" required>
+                        <label for="project-owner">Project Owner</label>
+                        <input readonly class="form-control-plaintext" type="text" placeholder="project-owner" id="project-owner" required>
                         <label for="description">Description:</label>
                         <textarea class="form-control mb-3" id="project-description" rows="3"
                             placeholder="Project Description" required></textarea>
