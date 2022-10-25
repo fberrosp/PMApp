@@ -158,7 +158,7 @@ export class View {
         const row = document.createElement('tr');
 
         const userName = document.createElement('th');
-        userName.textContent = user.firstName + '' + user.lastName;
+        userName.textContent = user.firstName + ' ' + user.lastName;
 
         const userEmail = document.createElement('td');
         userEmail.textContent = user.email;
@@ -198,7 +198,7 @@ export class View {
             userRoleText = '';
           }
 
-          userForm['user-name'].value = user.firstName + '' + user.lastName;
+          userForm['user-name'].value = user.firstName + ' ' + user.lastName;
           userForm['user-email'].value = user.email;
           userForm['user-role'].value = userRoleText;
 
@@ -229,11 +229,190 @@ export class View {
 
   displayProjectTeams() {
     console.log('projectTeams');
+
+    const teamForm = document.getElementById('team-form');
+    const teamTableBody = document.getElementById('team-table-body');
+    const teamRowData = document.createDocumentFragment();
+    let id = '';
+    const location = 'projects'
+    let noMembers = true;
+
+    appController.callGetDocumentSnapshot(location, (querySnapshot) => {
+      teamTableBody.textContent = '';
+
+      querySnapshot.forEach(docData => {
+        const project = docData.data();
+
+        const row = document.createElement('tr');
+
+        const projectName = document.createElement('th');
+        projectName.textContent = project.projectName;
+
+        const projectOwner = document.createElement('td');
+
+        appController.callGetDocument(project.projectOwner, 'users').then(userData => {
+          const user = userData.data();
+          projectOwner.textContent = user.firstName + ' ' + user.lastName;
+        })
+
+        const projectTeam = document.createElement('td');
+        let teamMembers;
+
+        if (project.team != null) {
+          teamMembers = 'members go here!';
+        } else {
+          //initialize member data
+          teamMembers = 'No members assigned to this project yet.';
+        }
+        projectTeam.textContent = teamMembers;
+
+        const addMember = document.createElement('td');
+        const addMemberButton = document.createElement('button');
+        addMember.appendChild(addMemberButton);
+        addMemberButton.setAttribute('data-id', docData.id);
+        addMemberButton.setAttribute('data-bs-toggle', 'modal');
+        addMemberButton.setAttribute('data-bs-target', '#add-remove-modal');
+        addMemberButton.classList.add('btn', 'btn-primary', 'btn-addMember');
+        addMemberButton.textContent = 'Add';
+
+        const removeMember = document.createElement('td');
+        const removeMemberButton = document.createElement('button');
+        removeMember.appendChild(removeMemberButton);
+        removeMemberButton.setAttribute('data-id', docData.id);
+        removeMemberButton.setAttribute('data-bs-toggle', 'modal');
+        removeMemberButton.setAttribute('data-bs-target', '#add-remove-modal');
+        removeMemberButton.classList.add('btn', 'btn-danger', 'btn-removeMember');
+        removeMemberButton.textContent = 'Remove';
+
+        row.appendChild(projectName);
+        row.appendChild(projectOwner);
+        row.appendChild(projectTeam);
+        row.appendChild(addMember);
+        row.appendChild(removeMember);
+
+        teamRowData.appendChild(row);
+        teamTableBody.appendChild(teamRowData);
+      });
+
+      //Add Member
+      const btnsAdd = teamTableBody.querySelectorAll(".btn-addMember");
+      btnsAdd.forEach(btn => {
+        btn.addEventListener('click', async ({ target: { dataset } }) => {
+          const docData = await appController.callGetDocument(dataset.id, location);
+          const project = docData.data();
+          const userData = await appController.callGetDocument(project.projectOwner, 'users');
+          let ownerId = userData.id;
+
+          teamForm['project-title'].value = project.projectName;
+
+          //create/update team map if it doesnt exist
+          const projectTeamSelection = document.getElementById('project-team');
+          const projectMap = project.team;
+
+          //users snapshot
+          const projectOwnerSelection = document.getElementById('project-owner');
+
+          appController.callGetDocumentSnapshot('users', (querySnapshot) => {
+            projectOwnerSelection.textContent = '';
+            projectTeamSelection.textContent = '';
+
+            querySnapshot.forEach(userDocData => { //for each user currently in the db...
+              const currentUser = userDocData.data();
+              const userId = userDocData.id;
+              const userName = currentUser.firstName + ' ' + currentUser.lastName;
+
+              //create owner tag
+              const optionData = document.createElement('option');
+              optionData.setAttribute('value', userId);
+              if (userId == ownerId){
+                optionData.selected = true;
+              } else {
+                optionData.selected = false;
+              }
+              optionData.textContent = userName;
+              projectOwnerSelection.appendChild(optionData);
+
+              
+              if (userId in projectMap && projectMap[userId] == false) { //if user is not already on the team...
+                //console.log(userName, 'not in team');
+                const teamOption = document.createElement('option');
+                teamOption.setAttribute('value', userId);
+                teamOption.textContent = userName;
+                projectTeamSelection.appendChild(teamOption);
+                //console.log(projectTeamSelection);
+              } else if (!(userId in projectMap)){
+                //user not in map
+                console.log(userName, 'not in map');
+              }
+
+            })
+
+          });
+          //projectOwnerSelection.appendChild(userSelectData);
+          //console.log(userSelectData);
+          //teamForm['project-owner'].value = user.firstName + ' ' + user.lastName;
+
+          id = docData.id;
+          teamForm['btn-team-save'].classList.add('brn-primary');
+          teamForm['btn-team-save'].textContent = 'Add Member';
+        });
+      });
+
+      //Remove Member
+      const btnsRemove = teamTableBody.querySelectorAll(".btn-removeMember");
+      btnsRemove.forEach(btn => {
+        btn.addEventListener('click', async ({ target: { dataset } }) => {
+          const docData = await appController.callGetDocument(dataset.id, location);
+          const project = docData.data();
+          const userData = await appController.callGetDocument(team.teamOwner, 'users');
+          const user = userData.data();
+
+          teamForm['project-title'].value = project.projectName;
+          teamForm['project-owner'].value = user.firstName + ' ' + user.lastName;
+
+          let teamMembers
+          if (project.team != null) {
+            teamMembers = 'members go here!'
+            noMembers = false;
+          } else {
+            teamMembers = 'No members assigned to this project yet.'
+          }
+
+          teamForm['project-team'].value = teamMembers;
+          teamForm['btn-team-save'].textContent = 'Remove Member';
+        });
+      });
+    });
+
+    //submit or edit
+    teamForm.addEventListener('submit', (e) => {
+      e.preventDefault()
+
+      const projectOwner = teamForm['project-owner'];
+      const projectTeam = teamForm['project-team'];
+      const teamModal = document.getElementById('add-remove-modal');
+      const modal = bootstrap.Modal.getInstance(teamModal);
+
+      let newFields = {
+        projectOwner: projectOwner.value,
+        [`team.${projectTeam.value}`]: true,
+        editedBy: appController.appSession.user.uid,
+        lastEdit: Timestamp.now()
+      };
+
+
+      //console.log(newFields);
+      //console.log(id);
+      //console.log(location);
+      appController.callUpdateDocument(id, newFields, location);
+
+      teamForm.reset();
+      modal.hide();
+    });
   }
 
   displayProjects() {
     console.log('projects!');
-    console.log(appController.appSession.user.uid);
 
     const displayProjects = document.getElementById('display-projects');
     const displayProjectTasks = document.getElementById('display-project-tasks');
@@ -344,7 +523,7 @@ export class View {
             const user = userData.data();
 
             projectForm['project-title'].value = project.projectName;
-            projectForm['project-owner'].value = user.firstName + '' + user.lastName;
+            projectForm['project-owner'].value = user.firstName + ' ' + user.lastName;
             projectForm['project-description'].value = project.description;
 
             editStatus = true;

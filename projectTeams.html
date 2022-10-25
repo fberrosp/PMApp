@@ -92,7 +92,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="sb-sidenav-footer" id="display-current-user"></div>                
+                <div class="sb-sidenav-footer" id="display-current-user"></div>
             </nav>
         </div>
         <div id="layoutSidenav_content">
@@ -106,6 +106,30 @@
                 </div>
             </main>
 
+            <!--CONTENT-->
+
+            <!--Display Projects-->
+            <div class="container p-4" id="display-teams">
+                <div class="row">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Project</th>
+                                <th scope="col">Owner</th>
+                                <th scope="col">Team</th>
+                                <th scope="col">Add</th>
+                                <th scope="col">Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody id="team-table-body">
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+
             <!--Footer-->
             <footer class="py-4 bg-light mt-auto">
                 <div class="container my-auto">
@@ -114,6 +138,38 @@
                     </div>
                 </div>
             </footer>
+        </div>
+    </div>
+
+
+    <!--Add/Remove Modal -->
+    <div class="modal fade" id="add-remove-modal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Manage Teams</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="team-form">
+                        <label for="project-title">Project Name</label>
+                        <input readonly class="form-control mb-3" type="text" placeholder="project-title" id="project-title" required>
+                        <label for="project-owner">Project Owner</label>
+                        <select class="form-select mb-3" aria-label="Project Owner" id="project-owner" required>
+                            <option value="" selected disabled>--Owner--</option>
+                        </select>
+                        <label for="project-team">Team</label>
+                        <select class="form-select mb-3" aria-label="Project team" id="project-team" required>
+                            <option value="" selected disabled>--Users--</option>
+                        </select>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button class="btn" id="btn-team-save"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 

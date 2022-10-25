@@ -9,7 +9,7 @@ export class Model {
       lastName: lastName,
       creationDate: Timestamp.now()
     };
-    return setDoc(doc(appController.appSession.db, 'users', user.uid), userData)
+    return setDoc(doc(appController.appSession.db, 'users', user.uid), userData);
   }
 
   saveDocument(data, location){
@@ -30,7 +30,7 @@ export class Model {
 
   getDocumentSnapshot(location, callback){
     const currentData = query(collection(appController.appSession.db, location), orderBy('creationDate', 'desc'));
-    onSnapshot(currentData, callback)
+    onSnapshot(currentData, callback);
   }
 
 }
