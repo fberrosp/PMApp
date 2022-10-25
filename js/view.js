@@ -255,16 +255,24 @@ export class View {
           projectOwner.textContent = user.firstName + ' ' + user.lastName;
         })
 
+        //check current members
         const projectTeam = document.createElement('td');
-        let teamMembers;
-
-        if (project.team != null) {
-          teamMembers = 'members go here!';
+        if (Object.values(project.team).some(val => val === true)) {
+          for (const key in project.team) {
+            if (project.team[key] == true) {
+              appController.callGetDocument(key, 'users').then(userData => {
+                const user = userData.data();
+                const currentMember = document.createElement('p');
+                currentMember.textContent = user.firstName + ' ' + user.lastName;
+                projectTeam.appendChild(currentMember);
+              })
+            }
+          }
         } else {
           //initialize member data
-          teamMembers = 'No members assigned to this project yet.';
+          projectTeam.textContent = 'No members assigned to this project yet.';
         }
-        projectTeam.textContent = teamMembers;
+        //projectTeam.appendChild(memberContainer);
 
         const addMember = document.createElement('td');
         const addMemberButton = document.createElement('button');
@@ -324,7 +332,7 @@ export class View {
               //create owner tag
               const optionData = document.createElement('option');
               optionData.setAttribute('value', userId);
-              if (userId == ownerId){
+              if (userId == ownerId) {
                 optionData.selected = true;
               } else {
                 optionData.selected = false;
@@ -332,7 +340,6 @@ export class View {
               optionData.textContent = userName;
               projectOwnerSelection.appendChild(optionData);
 
-              
               if (userId in projectMap && projectMap[userId] == false) { //if user is not already on the team...
                 //console.log(userName, 'not in team');
                 const teamOption = document.createElement('option');
@@ -340,7 +347,7 @@ export class View {
                 teamOption.textContent = userName;
                 projectTeamSelection.appendChild(teamOption);
                 //console.log(projectTeamSelection);
-              } else if (!(userId in projectMap)){
+              } else if (!(userId in projectMap)) {
                 //user not in map
                 console.log(userName, 'not in map');
               }
