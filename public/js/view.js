@@ -236,6 +236,7 @@ export class View {
     let id = '';
     const location = 'projects'
     let noMembers = true;
+    let addMembers = true;
 
     appController.callGetDocumentSnapshot(location, (querySnapshot) => {
       teamTableBody.textContent = '';
@@ -360,7 +361,7 @@ export class View {
           //teamForm['project-owner'].value = user.firstName + ' ' + user.lastName;
 
           id = docData.id;
-          teamForm['btn-team-save'].classList.add('brn-primary');
+          teamForm['btn-team-save'].classList.add('btn-primary');
           teamForm['btn-team-save'].textContent = 'Add Member';
         });
       });
@@ -371,27 +372,66 @@ export class View {
         btn.addEventListener('click', async ({ target: { dataset } }) => {
           const docData = await appController.callGetDocument(dataset.id, location);
           const project = docData.data();
-          const userData = await appController.callGetDocument(team.teamOwner, 'users');
-          const user = userData.data();
+          const userData = await appController.callGetDocument(project.projectOwner, 'users');
+          let ownerId = userData.id;
+          addMembers = false;
 
           teamForm['project-title'].value = project.projectName;
-          teamForm['project-owner'].value = user.firstName + ' ' + user.lastName;
 
-          let teamMembers
-          if (project.team != null) {
-            teamMembers = 'members go here!'
-            noMembers = false;
-          } else {
-            teamMembers = 'No members assigned to this project yet.'
-          }
+          //create/update team map if it doesnt exist
+          const projectTeamSelection = document.getElementById('project-team');
+          const projectMap = project.team;
 
-          teamForm['project-team'].value = teamMembers;
+          //users snapshot
+          const projectOwnerSelection = document.getElementById('project-owner');
+
+          appController.callGetDocumentSnapshot('users', (querySnapshot) => {
+            projectOwnerSelection.textContent = '';
+            projectTeamSelection.textContent = '';
+
+            querySnapshot.forEach(userDocData => { //for each user currently in the db...
+              const currentUser = userDocData.data();
+              const userId = userDocData.id;
+              const userName = currentUser.firstName + ' ' + currentUser.lastName;
+
+              //create owner tag
+              const optionData = document.createElement('option');
+              optionData.setAttribute('value', userId);
+              if (userId == ownerId) {
+                optionData.selected = true;
+              } else {
+                optionData.selected = false;
+              }
+              optionData.textContent = userName;
+              projectOwnerSelection.appendChild(optionData);
+
+              if (userId in projectMap && projectMap[userId] == true) { //if user is already on the team...
+                //console.log(userName, 'not in team');
+                const teamOption = document.createElement('option');
+                teamOption.setAttribute('value', userId);
+                teamOption.textContent = userName;
+                projectTeamSelection.appendChild(teamOption);
+                //console.log(projectTeamSelection);
+              } else if (!(userId in projectMap)) {
+                //user not in map
+                console.log(userName, 'not in map');
+              }
+
+            })
+
+          });
+          //projectOwnerSelection.appendChild(userSelectData);
+          //console.log(userSelectData);
+          //teamForm['project-owner'].value = user.firstName + ' ' + user.lastName;
+
+          id = docData.id;
+          teamForm['btn-team-save'].classList.add('btn-danger');
           teamForm['btn-team-save'].textContent = 'Remove Member';
         });
       });
     });
 
-    //submit or edit
+    //add members or rmeove?
     teamForm.addEventListener('submit', (e) => {
       e.preventDefault()
 
@@ -400,14 +440,28 @@ export class View {
       const teamModal = document.getElementById('add-remove-modal');
       const modal = bootstrap.Modal.getInstance(teamModal);
 
-      let newFields = {
-        projectOwner: projectOwner.value,
-        [`team.${projectTeam.value}`]: true,
-        editedBy: appController.appSession.user.uid,
-        lastEdit: Timestamp.now()
-      };
+      let newFields;
 
+      if (addMembers){
+        newFields = {
+          projectOwner: projectOwner.value,
+          [`team.${projectTeam.value}`]: true,
+          editedBy: appController.appSession.user.uid,
+          lastEdit: Timestamp.now()
+        };
+        teamForm['btn-team-save'].classList.remove('btn-primary');
+      }else{
+        //change key value pair to false
+        newFields = {
+          projectOwner: projectOwner.value,
+          [`team.${projectTeam.value}`]: false,
+          editedBy: appController.appSession.user.uid,
+          lastEdit: Timestamp.now()
+        };
+        teamForm['btn-team-save'].classList.remove('btn-danger');
+      }
 
+      teamForm
       //console.log(newFields);
       //console.log(id);
       //console.log(location);
