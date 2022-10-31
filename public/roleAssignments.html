@@ -97,35 +97,57 @@
         </div>
         <div id="layoutSidenav_content">
             <main>
+
+                <!--CONTENT-->
+
                 <div class="container-fluid px-4">
                     <h1 class="mt-4">Roles</h1>
-                    <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Charts</li>
-                    </ol>
-
                 </div>
+
+                <!--Display Users-->
+                <div class="container p-4" id="display-users">
+                    <div class="row gx-5">
+                        <div class="col-4">
+                            <form id="user-role-select-form">
+                                <h5 class="my-4">Select 1 or more users</h5>
+                                <hr class="solid">
+                                <select class="form-select" id="multiple-user-select" multiple
+                                    aria-label="multiple user select">
+                                </select>
+                                <h5 class="my-4">Select a role</h5>
+                                <hr class="solid">
+                                <select required class="form-select my-2" id="role-select" aria-label="role select">
+                                    <option value hidden selected disabled>--Role--</option>
+                                    <option value="0">Admin</option>
+                                    <option value="1">Developer</option>
+                                    <option value="2">Viewer</option>
+                                </select>
+                                <br>
+                                <button type="submit" class="btn btn-primary col-12" id="roleSubmitBtn">Submit</button>
+                            </form>
+                        </div>
+                        <div class="col-8">
+                            <h5 class="my-4">Users</h5>
+                            <hr class="solid">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">User</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Role</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="user-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
             </main>
 
-            <!--CONTENT-->
 
-            <!--Display Users-->
-            <div class="container p-4" id="display-users">
-                <div class="row">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">User</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Role</th>
-                                <th scope="col">Change Role</th>
-                            </tr>
-                        </thead>
-                        <tbody id="user-table-body">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
 
             <!--Footer-->
             <footer class="py-4 bg-light mt-auto">
@@ -139,8 +161,7 @@
     </div>
 
     <!--User Role Modal -->
-    <div class="modal fade" id="user-role-modal" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="user-role-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -159,7 +180,7 @@
                             <option value="0">Admin</option>
                             <option value="1">Developer</option>
                             <option value="2">Viewer</option>
-                        </select>           
+                        </select>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary" id="btn-user-save">Save</button>

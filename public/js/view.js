@@ -137,14 +137,18 @@ export class View {
   displayRoleAssignments() {
     console.log('roleAssignments');
 
-    const userForm = document.getElementById('user-form');
+    //populate user select
+    const userSelectionForm = document.getElementById('user-role-select-form');
+    const userSelection = document.getElementById('multiple-user-select');
+
+    //populate Table
     const userTableBody = document.getElementById('user-table-body');
     const userRowData = document.createDocumentFragment();
-    let id = '';
     const location = 'users'
 
     appController.callGetDocumentSnapshot(location, (querySnapshot) => {
       userTableBody.textContent = '';
+      userSelection.textContent = ''
 
       querySnapshot.forEach(docData => {
         const user = docData.data();
@@ -155,6 +159,7 @@ export class View {
           userRoleText = 'No role assigned';
         }
 
+        //table data
         const row = document.createElement('tr');
 
         const userName = document.createElement('th');
@@ -166,64 +171,54 @@ export class View {
         const userRole = document.createElement('td');
         userRole.textContent = userRoleText;
 
-        const editUser = document.createElement('td');
-        const editUserButton = document.createElement('button');
-        editUser.appendChild(editUserButton);
-        editUserButton.setAttribute('data-id', docData.id);
-        editUserButton.setAttribute('data-bs-toggle', 'modal');
-        editUserButton.setAttribute('data-bs-target', '#user-role-modal');
-        editUserButton.classList.add('btn', 'btn-secondary', 'btn-edit');
-        editUserButton.textContent = 'Edit';
+        //selection data
+        const userOptionSelect = document.createElement('option');
+        userOptionSelect.setAttribute('value', docData.id);
+        userOptionSelect.textContent = user.firstName + ' ' + user.lastName;
 
         row.appendChild(userName);
         row.appendChild(userEmail);
         row.appendChild(userRole);
-        row.appendChild(editUser);
+
+        userSelection.appendChild(userOptionSelect);
 
         userRowData.appendChild(row);
         userTableBody.appendChild(userRowData);
 
       });
 
-      //edit user
-      const btnsEdit = userTableBody.querySelectorAll(".btn-edit");
-      btnsEdit.forEach(btn => {
-        btn.addEventListener('click', async ({ target: { dataset } }) => {
-          const docData = await appController.callGetDocument(dataset.id, location);
-          const user = docData.data();
-          let userRoleText;
-          if (user.role != null) {
-            userRoleText = user.role;
-          } else {
-            userRoleText = '';
-          }
-
-          userForm['user-name'].value = user.firstName + ' ' + user.lastName;
-          userForm['user-email'].value = user.email;
-          userForm['user-role'].value = userRoleText;
-
-          id = docData.id;
-        });
-      });
     });
 
-    //edit
-    userForm.addEventListener('submit', (e) => {
-      e.preventDefault()
+    //confirmation button
 
-      const userRole = userForm['user-role'];
-      const userModal = document.getElementById('user-role-modal');
-      const modal = bootstrap.Modal.getInstance(userModal);
 
-      const newFields = {
-        role: parseInt(userRole.value)
+    //submit button
+    const roleSelect = document.getElementById('role-select');
+    userSelectionForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const userSelectedArray = [];
+      const userOptions = userSelection.options;
+
+      //selected users
+      for (var i = 0; i < userOptions.length; i++) {
+        const currentOption = userOptions[i];
+        if (currentOption.selected) {
+          userSelectedArray.push(currentOption.value);
+        }
       }
+      //selected role
+      const userRole = userSelectionForm['role-select'];
 
-      appController.callUpdateDocument(id, newFields, location);
+      //save new role (newfields) for each id
+      userSelectedArray.forEach(id => {
+        const newFields = {
+          role: parseInt(userRole.value)
+        }
+        appController.callUpdateDocument(id, newFields, location)
+      })
 
-      userForm.reset();
-      modal.hide();
-    });
+      userRole.selectedIndex = '';
+    })
 
   }
 
@@ -273,7 +268,6 @@ export class View {
           //initialize member data
           projectTeam.textContent = 'No members assigned to this project yet.';
         }
-        //projectTeam.appendChild(memberContainer);
 
         const addMember = document.createElement('td');
         const addMemberButton = document.createElement('button');
@@ -442,7 +436,7 @@ export class View {
 
       let newFields;
 
-      if (addMembers){
+      if (addMembers) {
         newFields = {
           projectOwner: projectOwner.value,
           [`team.${projectTeam.value}`]: true,
@@ -450,7 +444,7 @@ export class View {
           lastEdit: Timestamp.now()
         };
         teamForm['btn-team-save'].classList.remove('btn-primary');
-      }else{
+      } else {
         //change key value pair to false
         newFields = {
           projectOwner: projectOwner.value,

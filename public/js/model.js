@@ -7,7 +7,8 @@ export class Model {
       email: user.email,
       firstName: firstName,
       lastName: lastName,
-      creationDate: Timestamp.now()
+      creationDate: Timestamp.now(),
+      role: 2 //Default role is Viewer
     };
     return setDoc(doc(appController.appSession.db, 'users', user.uid), userData);
   }

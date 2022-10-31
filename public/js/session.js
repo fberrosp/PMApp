@@ -52,6 +52,7 @@ export class Session {
         // Signed in 
         const user = userCredential.user;
         //Save user data
+        //TRY WITH RETURN AND THEN STATEMENTS....
         appController.callSaveUserData(user, newUserData.firstName, newUserData.lastName);
         updateProfile(this.auth.currentUser, {
           displayName: newUserData.firstName + " " + newUserData.lastName
