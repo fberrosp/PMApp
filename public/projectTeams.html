@@ -97,38 +97,85 @@
         </div>
         <div id="layoutSidenav_content">
             <main>
+                <!--CONTENT-->
+
                 <div class="container-fluid px-4">
                     <h1 class="mt-4">Teams</h1>
-                    <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Charts</li>
+                    <ol class="breadcrumb mb-4" id="breadcrumbs-teams" style="display: none">
+                        <li class="breadcrumb-item"><a href="projectTeams.html">Teams</a></li>
+                        <li class="breadcrumb-item active" id="project-breadcrumb"></li>
                     </ol>
                 </div>
+
+                <!--Projects-->
+                <div class="container p-4" id="display-teams">
+                    <div class="row">
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Project</th>
+                                    <th scope="col">Owner</th>
+                                    <th scope="col">Team</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="team-table-body">
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
+
+                <!--Project details-->
+                <div class="container" id="display-team-details" style="display: none">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <form id="project-form">
+                                <label for="project-title">Project</label>
+                                <input class="form-control my-3" type="text" placeholder="Project Title"
+                                    id="project-title" required>
+                                <label for="project-owner">Project Owner</label>
+                                <input class="form-control my-3" type="text" placeholder="Project Owner"
+                                    id="project-owner" required>
+                                <div class="row gx-5 my-4">
+                                    <div class="col">
+                                        <label for="user-not-in-team-select">Not in team</label>
+                                        <select class="form-select my-4" id="user-not-in-team-select" multiple
+                                            aria-label="multiple user select">
+                                        </select>
+                                    </div>
+                                    <div class="col text-center">
+                                        <button class="btn btn-outline-primary" type="button"
+                                            id="btn-add-user">Add<br>&gt&gt&gt</button>
+                                        <hr>
+                                        <button class="btn btn-outline-danger" type="button"
+                                            id="btn-remove-user">Remove<br>&lt&lt&lt</button>
+                                    </div>
+                                    <div class="col">
+                                        <label for="user-in-team-select">In team</label>
+                                        <select class="form-select my-4" id="user-in-team-select" multiple
+                                            aria-label="multiple user select">
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-danger" id="btn-team-reset">Cancel</button>
+                                    <button type="submit" class="btn btn-primary" id="btn-team-save">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
             </main>
 
-            <!--CONTENT-->
-
-            <!--Display Projects-->
-            <div class="container p-4" id="display-teams">
-                <div class="row">
-
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Project</th>
-                                <th scope="col">Owner</th>
-                                <th scope="col">Team</th>
-                                <th scope="col">Add</th>
-                                <th scope="col">Remove</th>
-                            </tr>
-                        </thead>
-                        <tbody id="team-table-body">
-                        </tbody>
-                    </table>
 
 
-                </div>
-            </div>
 
             <!--Footer-->
             <footer class="py-4 bg-light mt-auto">
@@ -143,8 +190,7 @@
 
 
     <!--Add/Remove Modal -->
-    <div class="modal fade" id="add-remove-modal" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="add-remove-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -154,7 +200,8 @@
                 <div class="modal-body">
                     <form id="team-form">
                         <label for="project-title">Project Name</label>
-                        <input readonly class="form-control mb-3" type="text" placeholder="project-title" id="project-title" required>
+                        <input readonly class="form-control mb-3" type="text" placeholder="project-title"
+                            id="project-title" required>
                         <label for="project-owner">Project Owner</label>
                         <select class="form-select mb-3" aria-label="Project Owner" id="project-owner" required>
                             <option value="" selected disabled>--Owner--</option>
