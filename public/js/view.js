@@ -349,7 +349,8 @@ export class View {
     displayTeams.style.display = 'none'
     displayTeamDetails.style.display = 'block'
     breadcumbsTeams.style.display = 'block'
-
+    
+    const projectBreadcrumb = document.getElementById('project-breadcrumb');
     const projectForm = document.getElementById('project-form');
     const usersInTeamSelect = document.getElementById('user-in-team-select');
     const usersNotInTeamSelect = document.getElementById('user-not-in-team-select');
@@ -363,6 +364,7 @@ export class View {
       //console.log(projectData);
       //console.log(projectData.projectName);
       projectForm['project-title'].value = projectData.projectName;
+      projectBreadcrumb.textContent = projectData.projectName;
 
       appController.callGetDocument(projectData.projectOwner, 'users').then(userData => {
         const user = userData.data();
