@@ -357,6 +357,8 @@ export class View {
     const location = 'projects';
 
     appController.callGetDocument(projectId, location).then(project => {
+      usersInTeamSelect.textContent = '';
+      usersNotInTeamSelect.textContent = '';
       const projectData = project.data();
       //console.log(projectData);
       //console.log(projectData.projectName);
@@ -481,9 +483,23 @@ export class View {
 
       appController.callUpdateDocument(projectId, newFields, location);
       console.log('team updated!');
+      projectForm.reset();
+      displayTeams.style.display = 'block';
+      displayTeamDetails.style.display = 'none';
+      breadcumbsTeams.style.display = 'none';
+
     });
 
-    //reset form
+    //cancel
+    const cancelBtn = document.getElementById('btn-team-cancel');
+    cancelBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      projectForm.reset();
+      displayTeams.style.display = 'block';
+      displayTeamDetails.style.display = 'none';
+      breadcumbsTeams.style.display = 'none';
+    })
+
   }
 
   displayProjects() {
