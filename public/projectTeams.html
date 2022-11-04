@@ -137,8 +137,9 @@
                                 <input class="form-control my-3" type="text" placeholder="Project Title"
                                     id="project-title" required>
                                 <label for="project-owner">Project Owner</label>
-                                <input class="form-control my-3" type="text" placeholder="Project Owner"
-                                    id="project-owner" required>
+                                <select class="form-select my-3" aria-label="Default select example"
+                                    aria-placeholder="Project Owner" id="project-owner" required>
+                                </select>
                                 <div class="row gx-5 my-4">
                                     <div class="col">
                                         <label for="user-not-in-team-select">Not in team</label>
@@ -163,7 +164,8 @@
 
 
                                 <div class="modal-footer justify-content-between">
-                                    <button type="button" class="btn btn-danger" id="btn-team-cancel"><a href="projectTeams.html"></a>Cancel</button>
+                                    <button type="button" class="btn btn-danger" id="btn-team-cancel"><a
+                                            href="projectTeams.html"></a>Cancel</button>
                                     <button type="submit" class="btn btn-primary" id="btn-team-save">Save</button>
                                 </div>
                             </form>

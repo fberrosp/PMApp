@@ -77,10 +77,16 @@ export class View {
   }
 
   indexView() {
-    //redirect to index if user is authenticated
-    if (window.location.toString().includes('login.html') || window.location.toString().includes('register.html')) {
-      window.location.href = 'index.html'
-    }
+    //redirect to index if role
+
+    appController.callGetDocument(appController.appSession.user.uid, 'users').then(userData => {
+      const user = userData.data();
+      this.currentUserRole = user.role;
+
+      if (this.currentUserRole && (window.location.toString().includes('login.html') || window.location.toString().includes('register.html'))) {
+        window.location.href = 'index.html'
+      }
+    })
 
     this.sidebarLinks();
 
@@ -128,9 +134,6 @@ export class View {
   }
 
   displayDashboard() {
-    //this.sidebarLinks();
-    //render dashboard
-    //google charts
     console.log('dashboard');
   }
 
@@ -230,7 +233,6 @@ export class View {
     const teamRowData = document.createDocumentFragment();
     let id = '';
     const location = 'projects'
-    let noMembers = true;
     let addMembers = true;
 
     appController.callGetDocumentSnapshot(location, (querySnapshot) => {
@@ -349,63 +351,60 @@ export class View {
     displayTeams.style.display = 'none'
     displayTeamDetails.style.display = 'block'
     breadcumbsTeams.style.display = 'block'
-    
+
     const projectBreadcrumb = document.getElementById('project-breadcrumb');
     const projectForm = document.getElementById('project-form');
     const usersInTeamSelect = document.getElementById('user-in-team-select');
     const usersNotInTeamSelect = document.getElementById('user-not-in-team-select');
+    const projectOwnerSelect = document.getElementById('project-owner');
 
     const location = 'projects';
 
     appController.callGetDocument(projectId, location).then(project => {
       usersInTeamSelect.textContent = '';
       usersNotInTeamSelect.textContent = '';
+      projectOwnerSelect.textContent = '';
+
       const projectData = project.data();
       //console.log(projectData);
       //console.log(projectData.projectName);
       projectForm['project-title'].value = projectData.projectName;
       projectBreadcrumb.textContent = projectData.projectName;
 
-      appController.callGetDocument(projectData.projectOwner, 'users').then(userData => {
-        const user = userData.data();
-        //PROJECT FORM SHOULD BE A DROPDOWN;
-        projectForm['project-owner'].value = user.firstName + ' ' + user.lastName;
-      })
+      //call document snapshot
+      appController.callGetDocumentSnapshot('users', (users) => {
+        users.forEach(user => {
+          const userData = user.data()
+          //for each user create an opttion
+          const userOption = document.createElement('option');
+          userOption.value = user.id;
+          userOption.textContent = userData.firstName + ' ' + userData.lastName;
+
+          //if user is project owner, make him the selected option
+          if (user.id == projectData.projectOwner) {
+            userOption.selected = true;
+          }
+
+          projectOwnerSelect.appendChild(userOption);
+        });
+      });
 
       //loop through team attribute to find who is on team and whos not
       const allUsers = projectData.team;
-      let usersNotInTeam = [];
-      let usersInTeam = [];
-
       for (const key in allUsers) {
+        const currentUserOption = document.createElement('option');
+        currentUserOption.value = key;
+
+        appController.callGetDocument(key, 'users').then(userData => {
+          const user = userData.data();
+          currentUserOption.textContent = user.firstName + ' ' + user.lastName;
+        });
+
         if (allUsers[key]) {
-          usersInTeam.push(key);
+          usersInTeamSelect.appendChild(currentUserOption); //create user in team selection
         } else {
-          usersNotInTeam.push(key);
+          usersNotInTeamSelect.appendChild(currentUserOption); //create user not in team selection
         }
-      }
-      //create user in team selection
-      for (const currentUser in usersInTeam) {
-        const currentUserOption = document.createElement('option');
-        currentUserOption.value = usersInTeam[currentUser];
-
-        appController.callGetDocument(usersInTeam[currentUser], 'users').then(userData => {
-          const user = userData.data();
-          currentUserOption.textContent = user.firstName + ' ' + user.lastName;
-        })
-        usersInTeamSelect.appendChild(currentUserOption);
-      }
-
-      //create user not in team selection
-      for (const currentUser in usersNotInTeam) {
-        const currentUserOption = document.createElement('option');
-        currentUserOption.value = usersNotInTeam[currentUser];
-
-        appController.callGetDocument(usersNotInTeam[currentUser], 'users').then(userData => {
-          const user = userData.data();
-          currentUserOption.textContent = user.firstName + ' ' + user.lastName;
-        })
-        usersNotInTeamSelect.appendChild(currentUserOption);
       }
     });
 
@@ -545,45 +544,55 @@ export class View {
             projectOwner.textContent = user.firstName + ' ' + user.lastName;
           })
 
-          const creationDate = document.createElement('td');
-          creationDate.textContent = createDate;
+          const projectDetailsAndTask = document.createElement('td');
+          const projectList = document.createElement('ul');
+          projectDetailsAndTask.appendChild(projectList);
 
-          const lastEdit = document.createElement('td');
-          lastEdit.textContent = lastDate;
+          const projectListFirst = document.createElement('li');
+          projectList.appendChild(projectListFirst);
 
-          const projectTasks = document.createElement('td');
-          const projectTasksButton = document.createElement('button');
-          projectTasks.appendChild(projectTasksButton);
-          projectTasksButton.setAttribute('data-id', docData.id);
-          projectTasksButton.classList.add('btn', 'btn-primary', 'btn-projectTask');
-          projectTasksButton.textContent = 'Tasks';
+          const projectDetailsTag = document.createElement('p');
+          projectListFirst.appendChild(projectDetailsTag);
 
-          const editProject = document.createElement('td');
-          const editProjectButton = document.createElement('button');
-          editProject.appendChild(editProjectButton);
-          editProjectButton.setAttribute('data-id', docData.id);
-          editProjectButton.setAttribute('data-bs-toggle', 'modal');
-          editProjectButton.setAttribute('data-bs-target', '#createProjectModal');
-          editProjectButton.classList.add('btn', 'btn-secondary', 'btn-edit');
-          editProjectButton.textContent = 'Edit';
+          const projectDetailsLink = document.createElement('a');
+          projectDetailsTag.appendChild(projectDetailsLink);
 
-          const deleteProject = document.createElement('td');
-          const deleteProjectButton = document.createElement('button');
-          deleteProject.appendChild(deleteProjectButton);
-          deleteProjectButton.setAttribute('data-id', docData.id);
-          deleteProjectButton.classList.add('btn', 'btn-danger', 'btn-delete');
-          deleteProjectButton.textContent = 'Delete';
+          projectDetailsLink.setAttribute('data-id', docData.id);
+          projectDetailsLink.href = '#';
+          projectDetailsLink.classList.add('btn-projectDetails');
+          projectDetailsLink.textContent = 'Details';
+
+          const projectListSecond = document.createElement('li');
+          projectList.appendChild(projectListSecond);
+
+          const projectTaskTag = document.createElement('p');
+          projectListSecond.appendChild(projectTaskTag);
+
+          const projectTaskLink = document.createElement('a');
+          projectTaskTag.appendChild(projectTaskLink);
+
+          projectTaskLink.href = '#';
+          projectTaskLink.setAttribute('data-id', docData.id);
+          projectTaskLink.classList.add('btn-projectTask');
+          projectTaskLink.textContent = 'Tasks';
 
           row.appendChild(projectName);
           row.appendChild(projectOwner);
-          row.appendChild(creationDate);
-          row.appendChild(lastEdit);
-          row.appendChild(projectTasks);
-          row.appendChild(editProject);
-          row.appendChild(deleteProject);
+          row.appendChild(projectDetailsAndTask);
 
           projectRowData.appendChild(row);
           projectTableBody.appendChild(projectRowData);
+        });
+
+        //Project details
+        const btnsProjectDetails = projectTableBody.querySelectorAll(".btn-projectDetails");
+        btnsProjectDetails.forEach(btn => {
+          btn.addEventListener('click', ({ target: { dataset } }) => {
+            const projectId = dataset.id;
+
+            //REDIRECT TO PROJECT TASKS
+            this.displayProjectDetails(projectId);
+          })
         });
 
         //Project tasks
@@ -628,7 +637,7 @@ export class View {
 
       //submit or edit
       projectForm.addEventListener('submit', (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
         const projectName = projectForm['project-title'];
         const description = projectForm['project-description'];
@@ -661,11 +670,140 @@ export class View {
     }
   }
 
-  displayProjectTasks(projectId) {
+  displayProjectDetails(projectId) {
+    console.log('in projectDetails!');
+
     const displayProjects = document.getElementById('display-projects');
     const displayProjectTasks = document.getElementById('display-project-tasks');
-    displayProjects.style.display = 'none'
-    displayProjectTasks.style.display = 'block'
+    const breadcumbsTeams = document.getElementById('breadcrumbs-teams');
+    const projectBreadcrumb = document.getElementById('project-breadcrumb');
+    const projectDetails = document.getElementById('display-project-details');
+    projectDetails.style.display = 'block';
+    displayProjects.style.display = 'none';
+    displayProjectTasks.style.display = 'none';
+    breadcumbsTeams.style.display = 'block';
+
+    //const taskForm = document.getElementById('task-form');
+    //const taskTableBody = document.getElementById('task-table-body');
+    //const taskRowData = document.createDocumentFragment();
+    const projectForm = document.getElementById('project-form');
+    const projectTeam = document.getElementById('project-team');
+    const projectOwnerSelect = document.getElementById('project-owner');
+    let editStatus = false;
+    let id = '';
+
+    const location = 'projects';
+
+    appController.callGetDocument(projectId, location).then(project => {
+      projectTeam.textContent = '';
+      const projectData = project.data();
+      //console.log(projectData);
+      //console.log(projectData.projectName);
+      projectForm['project-title'].value = projectData.projectName;
+      projectBreadcrumb.textContent = projectData.projectName;
+
+
+
+      //call document snapshot
+      appController.callGetDocumentSnapshot('users', (users) => {
+        users.forEach(user => {
+          const userData = user.data()
+          //for each user create an opttion
+          const userOption = document.createElement('option');
+          userOption.value = user.id;
+          userOption.textContent = userData.firstName + ' ' + userData.lastName;
+
+          //if user is project owner, make him the selected option
+          if (user.id == projectData.projectOwner) {
+            userOption.selected = true;
+          }
+
+          projectOwnerSelect.appendChild(userOption);
+        });
+      });
+
+      projectForm['project-description'].value = projectData.description;
+
+
+      //loop through team attribute to write team
+      const allUsers = projectData.team;
+
+      for (const key in allUsers) {
+        if (allUsers[key]) {
+          //create team options
+          const currentUserOption = document.createElement('option');
+          currentUserOption.value = key;
+
+          appController.callGetDocument(key, 'users').then(userData => {
+            const user = userData.data();
+            currentUserOption.textContent = user.firstName + ' ' + user.lastName;
+          });
+
+          projectTeam.appendChild(currentUserOption);
+        }
+      }
+
+    });
+
+    //Edit
+    if (this.currentUserRole == 0) {
+      const editBtn = document.getElementById('btn-project-edit');
+      editBtn.style.display = 'block';
+
+      const cancelBtn = document.getElementById('btn-project-cancel');
+      const saveBtn = document.getElementById('btn-project-save');
+
+      editBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        projectForm['project-title'].disabled = false;
+        projectForm['project-owner'].disabled = false;
+        projectForm['project-description'].disabled = false;
+        projectForm['project-team'].disabled = false;
+
+        cancelBtn.style.display = 'block';
+        saveBtn.style.display = 'block';
+        editBtn.style.display = 'none';
+      });
+
+      cancelBtn.addEventListener('click', (e) => {
+        console.log('in cancel');
+
+        projectForm['project-title'].disabled = true;
+        projectForm['project-owner'].disabled = true;
+        projectForm['project-description'].disabled = true;
+        projectForm['project-team'].disabled = true;
+
+        cancelBtn.style.display = 'none';
+        saveBtn.style.display = 'none';
+        editBtn.style.display = 'block';
+      });
+
+      projectForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        console.log('in submit');
+      })
+    }
+
+
+
+
+
+
+  }
+
+  displayProjectTasks(projectId) {
+    console.log('in projectTasks!');
+
+    const displayProjects = document.getElementById('display-projects');
+    const displayProjectTasks = document.getElementById('display-project-tasks');
+    const breadcumbsTeams = document.getElementById('breadcrumbs-teams');
+    const projectBreadcrumb = document.getElementById('project-breadcrumb');
+    const projectDetails = document.getElementById('display-project-details');
+    projectDetails.style.display = 'none';
+    displayProjects.style.display = 'none';
+    displayProjectTasks.style.display = 'block';
+    breadcumbsTeams.style.display = 'block';
 
     const taskForm = document.getElementById('task-form');
     const taskTableBody = document.getElementById('task-table-body');
@@ -678,35 +816,48 @@ export class View {
     const location = projectCollection.concat(projectId, tasksCollection);
 
     appController.callGetDocumentSnapshot(location, (querySnapshot) => {
+      console.log('in snapshot!');
+
       taskTableBody.textContent = '';
       querySnapshot.forEach(docData => {
         const task = docData.data();
         const dueDate = task.dueDate.toDate().toString().slice(0, 16);
 
-        let row = document.createElement('tr');
-        let taskName = document.createElement('th');
-        let taskStatus = document.createElement('td');
-        let taskPriority = document.createElement('td');
-        let taskDue = document.createElement('td');
-        let editTask = document.createElement('td');
-        let editTaskButton = document.createElement('button');
-        let deleteTask = document.createElement('td');
-        let deleteTaskButton = document.createElement('button');
+        const row = document.createElement('tr');
 
+        const taskName = document.createElement('th');
         taskName.textContent = task.title;
+
+        const taskStatus = document.createElement('td');
         taskStatus.textContent = this.statusDict[task.status];
+
+        const taskPriority = document.createElement('td');
         taskPriority.textContent = this.priorityDict[task.priority];
+
+        const taskDue = document.createElement('td');
         taskDue.textContent = dueDate;
+
+        const editTask = document.createElement('td');
+        const editTaskButton = document.createElement('button');
         editTask.appendChild(editTaskButton);
         editTaskButton.setAttribute('data-id', docData.id);
         editTaskButton.setAttribute('data-bs-toggle', 'modal');
         editTaskButton.setAttribute('data-bs-target', '#createTaskModal');
         editTaskButton.classList.add('btn', 'btn-secondary', 'btn-edit');
         editTaskButton.textContent = 'Edit';
+
+        const deleteTask = document.createElement('td');
+        const deleteTaskButton = document.createElement('button');
         deleteTask.appendChild(deleteTaskButton);
         deleteTaskButton.setAttribute('data-id', docData.id);
         deleteTaskButton.classList.add('btn', 'btn-danger', 'btn-delete');
         deleteTaskButton.textContent = 'Delete';
+
+        appController.callGetDocument(projectId, 'projects').then(projectData => {
+          const project = projectData.data();
+          projectBreadcrumb.textContent = project.projectName;
+
+        })
 
         row.appendChild(taskName);
         row.appendChild(taskStatus);

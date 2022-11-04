@@ -4,10 +4,6 @@ import { Session } from "./session.js";
 
 class Controller {
     constructor(appSession, appView, appModel) {
-        //authentication (is the user authenicated?, true/false) --> class session 
-        //load index view if true
-        //load register/login view if false
-        //load view
         this.appSession = appSession;
         this.appView = appView;
         this.appModel = appModel;

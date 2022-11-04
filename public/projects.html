@@ -99,9 +99,9 @@
             <main>
                 <div class="container-fluid px-4">
                     <h1 class="mt-4">Projects</h1>
-                    <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Charts</li>
+                    <ol class="breadcrumb mb-4" id="breadcrumbs-teams" style="display: none">
+                        <li class="breadcrumb-item"><a href="projects.html">Projects</a></li>
+                        <li class="breadcrumb-item active" id="project-breadcrumb">Charts</li>
                     </ol>
 
                     <!--CONTENT-->
@@ -120,11 +120,7 @@
                                     <tr>
                                         <th scope="col">Project</th>
                                         <th scope="col">Owner</th>
-                                        <th scope="col">Created</th>
-                                        <th scope="col">Last Edit</th>
-                                        <th scope="col">Tasks</th>
-                                        <th scope="col">Edit</th>
-                                        <th scope="col">Delete</th>
+                                        <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody id="project-table-body">
@@ -132,6 +128,38 @@
                             </table>
 
 
+                        </div>
+                    </div>
+
+                    <!--Project details-->
+                    <div class="container" id="display-project-details" style="display: none">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <form id="project-form">
+                                    <label for="project-title">Project</label>
+                                    <input class="form-control my-3" type="text" placeholder="Project Title"
+                                        id="project-title" required disabled>
+                                    <label for="project-owner">Project Owner</label>
+                                    <select class="form-select my-3" aria-label="Default select example"
+                                        aria-placeholder="Project Owner" id="project-owner" required disabled>
+                                    </select>
+                                    <label for="project-description">Project Description</label>
+                                    <input class="form-control my-3" type="text" placeholder="Project Description"
+                                        id="project-description" required disabled>
+                                    <label for="project-team">Team</label>
+                                    <select class="form-select my-4" id="project-team" multiple
+                                        aria-label="project team" disabled>
+                                    </select>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-secondary" id="btn-project-edit"
+                                            style="display: none">Edit</button>
+                                        <button type="button" class="btn btn-danger" id="btn-project-cancel"
+                                            style="display: none">Cancel</button>
+                                        <button type="submit" class="btn btn-primary" id="btn-project-save"
+                                            style="display: none">Save</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
 
@@ -186,9 +214,11 @@
                 <div class="modal-body">
                     <form id="project-form">
                         <label for="project-title">Project Name</label>
-                        <input class="form-control mb-3" type="text" placeholder="project-title" id="project-title" required>
+                        <input class="form-control mb-3" type="text" placeholder="project-title" id="project-title"
+                            required>
                         <label for="project-owner">Project Owner</label>
-                        <input readonly class="form-control-plaintext" type="text" placeholder="project-owner" id="project-owner" required>
+                        <input readonly class="form-control-plaintext" type="text" placeholder="project-owner"
+                            id="project-owner" required>
                         <label for="description">Description:</label>
                         <textarea class="form-control mb-3" id="project-description" rows="3"
                             placeholder="Project Description" required></textarea>

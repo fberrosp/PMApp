@@ -5,16 +5,16 @@
 - [x] New user registration
 - [x] Google login
 - [x] Auth on-state-change
-- [ ] Implement roles (admin, dev, demo)
+- [x] Implement roles (admin, dev, demo)
 - [ ] Session timeouts
-- [ ] Specify permissions for writing and deleting projects/tasks
+- [x] Specify permissions for writing and deleting projects/tasks
 - [ ] Facebook login
 - [ ] Retype password
 - [ ] Password strength
 - [ ] Verify email
 - [ ] Two-factor authentication
 - [ ] Captcha
-- [ ] Write firebase security rules -> try catch redirect back to login
+- [x] Write firebase security rules -> try catch redirect back to login
 
 ## CRUD operations
 - [x] Create projects
@@ -31,13 +31,13 @@
 ## Database
 - [x] Users collection
 - [x] Projects collection
-- [ ] Tasks collection inside each project (create if it doesn't exist)
+- [x] Tasks collection inside each project (create if it doesn't exist)
 - [ ] Organization collection
 
 ## UX/UI
 - [x] Bootstrap design
 - [ ] Drag and drop card view
-- [ ] Breadcrumbs for tasks and projects
+- [x] Breadcrumbs for tasks and projects
 
 ## Other
 - [ ] SRS documentation
