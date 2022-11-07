@@ -689,7 +689,7 @@ export class View {
 
     });
 
-    //Edit
+    //Admin
     if (this.currentUserRole == 0) {
       const editBtn = document.getElementById('btn-project-edit');
       editBtn.style.display = 'block';
@@ -697,6 +697,7 @@ export class View {
       const cancelBtn = document.getElementById('btn-project-cancel');
       const saveBtn = document.getElementById('btn-project-save');
 
+      //Edit
       editBtn.addEventListener('click', (e) => {
         e.preventDefault();
 
@@ -710,6 +711,7 @@ export class View {
         editBtn.style.display = 'none';
       });
 
+      //Cancel
       cancelBtn.addEventListener('click', (e) => {
         console.log('in cancel');
 
@@ -723,6 +725,7 @@ export class View {
         editBtn.style.display = 'block';
       });
 
+      //Submit
       projectForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -775,8 +778,6 @@ export class View {
     const taskForm = document.getElementById('task-form');
     const taskTableBody = document.getElementById('task-table-body');
     const taskRowData = document.createDocumentFragment();
-    let editStatus = false;
-    let id = '';
 
     const projectCollection = 'projects/';
     const tasksCollection = '/tasks';
@@ -784,6 +785,9 @@ export class View {
 
     const sortField = 'creationDate';
     const sortBy = 'desc';
+
+    let toBeEdited = false;
+    let id = '';
 
     appController.callGetDocumentSnapshot(location, (querySnapshot) => {
 
@@ -885,6 +889,13 @@ export class View {
             startDate = task.startDate;
           }
 
+          let lastEdit;
+          if (task.lastEdit == null) {
+            lastEdit = task.creationDate;
+          } else {
+            lastEdit = task.lastEdit;
+          }
+
           //change all fields to read only
 
           taskForm['task-title'].disabled = true;
@@ -962,120 +973,130 @@ export class View {
           taskForm['task-creationDate'].valueAsDate = task.creationDate.toDate();
           taskForm['task-startDate'].valueAsDate = startDate.toDate();
           taskForm['task-dueDate'].valueAsDate = task.dueDate.toDate();
-          taskForm['task-lastEdit'].valueAsDate = task.lastEdit.toDate();
+          taskForm['task-lastEdit'].valueAsDate = lastEdit.toDate();
 
           id = docData.id;
         })
       });
-
-      if (this.currentUserRole == 0) {
-
-        const deleteBtn = document.getElementById('btn-task-delete');
-        const editBtn = document.getElementById('btn-task-edit');
-        const cancelBtn = document.getElementById('btn-task-cancel');
-        const saveBtn = document.getElementById('btn-task-save');
-        editBtn.style.display = 'block';
-
-        editBtn.addEventListener('click', (e) => {
-          taskForm['task-title'].disabled = false;
-          taskForm['task-project'].disabled = false;
-          taskForm['task-assignee'].disabled = false;
-          taskForm['task-status'].disabled = false;
-          taskForm['task-priority'].disabled = false;
-          taskForm['task-startDate'].disabled = false;
-          taskForm['task-dueDate'].disabled = false;
-          deleteBtn.style.display = 'block';
-          editBtn.style.display = 'none';
-          cancelBtn.style.display = 'block';
-          saveBtn.style.display = 'block';
-          editStatus = true;
-          taskForm['btn-task-save'].textContent = 'Update';
-        });
-
-        cancelBtn.addEventListener('click', (e) => {
-          taskForm['task-title'].disabled = true;
-          taskForm['task-project'].disabled = true;
-          taskForm['task-assignee'].disabled = true;
-          taskForm['task-status'].disabled = true;
-          taskForm['task-priority'].disabled = true;
-          taskForm['task-startDate'].disabled = true;
-          taskForm['task-dueDate'].disabled = true;
-          deleteBtn.style.display = 'none';
-          editBtn.style.display = 'block';
-          cancelBtn.style.display = 'none';
-          saveBtn.style.display = 'none';
-          taskForm['btn-task-save'].textContent = 'Save';
-        });
-
-        //delete task
-        deleteBtn.addEventListener('click', (e) => {
-          console.log('delete button');
-          //appController.callDeleteDocument(dataset.id, location)
-        })
-
-
-        taskForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const taskModal = document.getElementById('createTaskModal');
-          const modal = bootstrap.Modal.getInstance(taskModal);
-
-          const taskTitle = taskForm['task-title'].value;
-          const taskProject = taskForm['task-project'].value;
-          const taskAssignee = taskForm['task-assignee'].value;
-          const taskStatus = taskForm['task-status'].value;
-          const taskPriority = taskForm['task-priority'].value;
-          const taskStartDate = taskForm['task-startDate'].valueAsDate;
-          const taskDueDate = taskForm['task-dueDate'].valueAsDate;
-
-          let taskData;
-          if (!editStatus) { //new task
-            taskData = {
-              title: taskTitle,
-              project: taskProject,
-              assignee: taskAssignee,
-              status: parseInt(taskStatus),
-              priority: parseInt(taskPriority),
-              startDate: taskStartDate,
-              dueDate: taskDueDate,
-              createdBy: appController.appSession.user.uid,
-              creationDate: Timestamp.now()
-            }
-            appController.callSaveDocument(taskData, location);
-            console.log('task created!');
-          } else { //task edit
-            taskData = {
-              title: taskTitle,
-              project: taskProject,
-              assignee: taskAssignee,
-              status: parseInt(taskStatus),
-              priority: parseInt(taskPriority),
-              startDate: taskStartDate,
-              dueDate: taskDueDate,
-              editedBy: appController.appSession.user.uid,
-              lastEdit: Timestamp.now()
-            }
-            appController.callUpdateDocument(id, taskData, location);
-            console.log('task information udpated!');
-            editStatus = false;
-            taskForm['btn-task-save'].textContent = 'Save';
-          }
-          taskForm.reset();
-          modal.hide();
-
-          taskForm['task-title'].disabled = true;
-          taskForm['task-project'].disabled = true;
-          taskForm['task-assignee'].disabled = true;
-          taskForm['task-status'].disabled = true;
-          taskForm['task-priority'].disabled = true;
-          taskForm['task-startDate'].disabled = true;
-          taskForm['task-dueDate'].disabled = true;
-          deleteBtn.style.display = 'none';
-          editBtn.style.display = 'block';
-          cancelBtn.style.display = 'none';
-          saveBtn.style.display = 'none';
-        })
-      }
     }, sortField, sortBy);
+
+    //Admin
+    if (this.currentUserRole == 0) {
+
+      const deleteBtn = document.getElementById('btn-task-delete');
+      const editBtn = document.getElementById('btn-task-edit');
+      const cancelBtn = document.getElementById('btn-task-cancel');
+      const saveBtn = document.getElementById('btn-task-save');
+      editBtn.style.display = 'block';
+
+      //Edit
+      editBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        taskForm['task-title'].disabled = false;
+        taskForm['task-project'].disabled = false;
+        taskForm['task-assignee'].disabled = false;
+        taskForm['task-status'].disabled = false;
+        taskForm['task-priority'].disabled = false;
+        taskForm['task-startDate'].disabled = false;
+        taskForm['task-dueDate'].disabled = false;
+        deleteBtn.style.display = 'block';
+        editBtn.style.display = 'none';
+        cancelBtn.style.display = 'block';
+        saveBtn.style.display = 'block';
+        toBeEdited = true;
+        taskForm['btn-task-save'].textContent = 'Update';
+      });
+
+      //Cancel
+      cancelBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        taskForm['task-title'].disabled = true;
+        taskForm['task-project'].disabled = true;
+        taskForm['task-assignee'].disabled = true;
+        taskForm['task-status'].disabled = true;
+        taskForm['task-priority'].disabled = true;
+        taskForm['task-startDate'].disabled = true;
+        taskForm['task-dueDate'].disabled = true;
+        deleteBtn.style.display = 'none';
+        editBtn.style.display = 'block';
+        cancelBtn.style.display = 'none';
+        saveBtn.style.display = 'none';
+        taskForm['btn-task-save'].textContent = 'Save';
+      });
+
+      //Delete
+      deleteBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        console.log('delete button');
+        //appController.callDeleteDocument(dataset.id, location)
+      })
+
+      //Submit
+      taskForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const taskModal = document.getElementById('createTaskModal');
+        const modal = bootstrap.Modal.getInstance(taskModal);
+
+        const taskTitle = taskForm['task-title'].value;
+        const taskProject = taskForm['task-project'].value;
+        const taskAssignee = taskForm['task-assignee'].value;
+        const taskStatus = taskForm['task-status'].value;
+        const taskPriority = taskForm['task-priority'].value;
+        const taskStartDate = taskForm['task-startDate'].valueAsDate;
+        const taskDueDate = taskForm['task-dueDate'].valueAsDate;
+
+        let taskData;
+        if (!toBeEdited) { //new task
+          taskData = {
+            title: taskTitle,
+            project: taskProject,
+            assignee: taskAssignee,
+            status: parseInt(taskStatus),
+            priority: parseInt(taskPriority),
+            startDate: taskStartDate,
+            dueDate: taskDueDate,
+            createdBy: appController.appSession.user.uid,
+            creationDate: Timestamp.now()
+          }
+          appController.callSaveDocument(taskData, location);
+          console.log('task created!');
+        } else { //task edit
+          taskData = {
+            title: taskTitle,
+            project: taskProject,
+            assignee: taskAssignee,
+            status: parseInt(taskStatus),
+            priority: parseInt(taskPriority),
+            startDate: taskStartDate,
+            dueDate: taskDueDate,
+            editedBy: appController.appSession.user.uid,
+            lastEdit: Timestamp.now()
+          }
+          appController.callUpdateDocument(id, taskData, location);
+          console.log('task information udpated!');
+          toBeEdited = false;
+          taskForm['btn-task-save'].textContent = 'Save';
+        }
+
+        taskForm['task-title'].disabled = true;
+        taskForm['task-project'].disabled = true;
+        taskForm['task-assignee'].disabled = true;
+        taskForm['task-status'].disabled = true;
+        taskForm['task-priority'].disabled = true;
+        taskForm['task-startDate'].disabled = true;
+        taskForm['task-dueDate'].disabled = true;
+        deleteBtn.style.display = 'none';
+        editBtn.style.display = 'block';
+        cancelBtn.style.display = 'none';
+        saveBtn.style.display = 'none';
+
+        taskForm.reset();
+        modal.hide();
+      })
+    }
   }
 
   displayTasks() {
