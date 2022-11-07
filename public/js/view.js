@@ -7,7 +7,9 @@ export class View {
       0: 'Backlog',
       1: 'To-do',
       2: 'In progress',
-      3: 'Completed'
+      3: 'Completed',
+      4: 'On hold',
+      5: 'Cancelled'
     }
 
     this.priorityDict = {
@@ -147,7 +149,10 @@ export class View {
     //populate Table
     const userTableBody = document.getElementById('user-table-body');
     const userRowData = document.createDocumentFragment();
-    const location = 'users'
+    const location = 'users';
+
+    const sortField = 'lastLogin';
+    const sortBy = 'desc';
 
     appController.callGetDocumentSnapshot(location, (querySnapshot) => {
       userTableBody.textContent = '';
@@ -190,7 +195,7 @@ export class View {
 
       });
 
-    });
+    }, sortField, sortBy);
 
     //confirmation button
 
@@ -234,6 +239,9 @@ export class View {
     let id = '';
     const location = 'projects'
     let addMembers = true;
+
+    const sortField = 'creationDate';
+    const sortBy = 'desc';
 
     appController.callGetDocumentSnapshot(location, (querySnapshot) => {
       teamTableBody.textContent = '';
@@ -299,7 +307,7 @@ export class View {
         })
       });
 
-    });
+    }, sortField, sortBy);
 
     //add members or rmeove?
     teamForm.addEventListener('submit', (e) => {
@@ -366,12 +374,13 @@ export class View {
       projectOwnerSelect.textContent = '';
 
       const projectData = project.data();
-      //console.log(projectData);
-      //console.log(projectData.projectName);
+
       projectForm['project-title'].value = projectData.projectName;
       projectBreadcrumb.textContent = projectData.projectName;
 
       //call document snapshot
+      const sortField = 'lastLogin';
+      const sortBy = 'desc';
       appController.callGetDocumentSnapshot('users', (users) => {
         users.forEach(user => {
           const userData = user.data()
@@ -387,7 +396,7 @@ export class View {
 
           projectOwnerSelect.appendChild(userOption);
         });
-      });
+      }, sortField, sortBy);
 
       //loop through team attribute to find who is on team and whos not
       const allUsers = projectData.team;
@@ -511,163 +520,102 @@ export class View {
     displayProjects.style.display = 'block'
     displayProjectTasks.style.display = 'none'
 
-    const projectForm = document.getElementById('project-form');
+    const projectFormModal = document.getElementById('project-form-modal');
     const projectTableBody = document.getElementById('project-table-body');
     const projectRowData = document.createDocumentFragment();
-    let editStatus = false;
-    let id = '';
     const location = 'projects'
 
-    if (projectForm !== null) {
-      appController.callGetDocumentSnapshot(location, (querySnapshot) => {
-        projectTableBody.textContent = '';
+    const sortField = 'creationDate';
+    const sortBy = 'desc';
 
-        querySnapshot.forEach(docData => {
-          const project = docData.data();
-          const createDate = project.creationDate.toDate().toString().slice(0, 21);
-          let lastDate;
-          if (project.lastEdit != null) {
-            lastDate = project.lastEdit.toDate().toString().slice(0, 21);
-          } else {
-            lastDate = "No edits";
-          }
+    appController.callGetDocumentSnapshot(location, (querySnapshot) => {
+      projectTableBody.textContent = '';
 
-          const row = document.createElement('tr');
-
-          const projectName = document.createElement('th');
-          projectName.textContent = project.projectName;
-
-          const projectOwner = document.createElement('td');
-
-          appController.callGetDocument(project.projectOwner, 'users').then(userData => {
-            const user = userData.data();
-            projectOwner.textContent = user.firstName + ' ' + user.lastName;
-          })
-
-          const projectDetailsAndTask = document.createElement('td');
-          const projectList = document.createElement('ul');
-          projectDetailsAndTask.appendChild(projectList);
-
-          const projectListFirst = document.createElement('li');
-          projectList.appendChild(projectListFirst);
-
-          const projectDetailsTag = document.createElement('p');
-          projectListFirst.appendChild(projectDetailsTag);
-
-          const projectDetailsLink = document.createElement('a');
-          projectDetailsTag.appendChild(projectDetailsLink);
-
-          projectDetailsLink.setAttribute('data-id', docData.id);
-          projectDetailsLink.href = '#';
-          projectDetailsLink.classList.add('btn-projectDetails');
-          projectDetailsLink.textContent = 'Details';
-
-          const projectListSecond = document.createElement('li');
-          projectList.appendChild(projectListSecond);
-
-          const projectTaskTag = document.createElement('p');
-          projectListSecond.appendChild(projectTaskTag);
-
-          const projectTaskLink = document.createElement('a');
-          projectTaskTag.appendChild(projectTaskLink);
-
-          projectTaskLink.href = '#';
-          projectTaskLink.setAttribute('data-id', docData.id);
-          projectTaskLink.classList.add('btn-projectTask');
-          projectTaskLink.textContent = 'Tasks';
-
-          row.appendChild(projectName);
-          row.appendChild(projectOwner);
-          row.appendChild(projectDetailsAndTask);
-
-          projectRowData.appendChild(row);
-          projectTableBody.appendChild(projectRowData);
-        });
-
-        //Project details
-        const btnsProjectDetails = projectTableBody.querySelectorAll(".btn-projectDetails");
-        btnsProjectDetails.forEach(btn => {
-          btn.addEventListener('click', ({ target: { dataset } }) => {
-            const projectId = dataset.id;
-
-            //REDIRECT TO PROJECT TASKS
-            this.displayProjectDetails(projectId);
-          })
-        });
-
-        //Project tasks
-        const btnsProjectTask = projectTableBody.querySelectorAll(".btn-projectTask");
-        btnsProjectTask.forEach(btn => {
-          btn.addEventListener('click', ({ target: { dataset } }) => {
-            const projectId = dataset.id;
-
-            //REDIRECT TO PROJECT TASKS
-            this.displayProjectTasks(projectId);
-          })
-        });
-
-        //delete project
-        const btnsDelete = projectTableBody.querySelectorAll(".btn-delete");
-        btnsDelete.forEach(btn => {
-          btn.addEventListener('click', ({ target: { dataset } }) => {
-            appController.callDeleteDocument(dataset.id, location);
-          });
-        });
-
-        //edit project
-        const btnsEdit = projectTableBody.querySelectorAll(".btn-edit");
-        btnsEdit.forEach(btn => {
-          btn.addEventListener('click', async ({ target: { dataset } }) => {
-            const docData = await appController.callGetDocument(dataset.id, location);
-            const project = docData.data();
-            const userData = await appController.callGetDocument(project.projectOwner, 'users');
-            const user = userData.data();
-
-            projectForm['project-title'].value = project.projectName;
-            projectForm['project-owner'].value = user.firstName + ' ' + user.lastName;
-            projectForm['project-description'].value = project.description;
-
-            editStatus = true;
-            id = docData.id;
-            projectForm['btn-project-save'].textContent = 'Update';
-
-          });
-        });
-      });
-
-      //submit or edit
-      projectForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const projectName = projectForm['project-title'];
-        const description = projectForm['project-description'];
-        const projectModal = document.getElementById('createProjectModal');
-        const modal = bootstrap.Modal.getInstance(projectModal);
-
-        if (!editStatus) {
-          const saveFields = {
-            projectName: projectName.value,
-            projectOwner: appController.appSession.user.uid,
-            description: description.value,
-            createdBy: appController.appSession.user.uid,
-            creationDate: Timestamp.now()
-          }
-          appController.callSaveDocument(saveFields, location);
+      querySnapshot.forEach(docData => {
+        const project = docData.data();
+        const createDate = project.creationDate.toDate().toString().slice(0, 21);
+        let lastDate;
+        if (project.lastEdit != null) {
+          lastDate = project.lastEdit.toDate().toString().slice(0, 21);
         } else {
-          const newFields = {
-            projectName: projectName.value,
-            description: description.value,
-            editedBy: appController.appSession.user.uid,
-            lastEdit: Timestamp.now()
-          }
-          appController.callUpdateDocument(id, newFields, location);
-          editStatus = false;
-          projectForm['btn-project-save'].textContent = 'Save';
+          lastDate = "No edits";
         }
-        projectForm.reset();
-        modal.hide();
+
+        const row = document.createElement('tr');
+
+        const projectName = document.createElement('th');
+        projectName.textContent = project.projectName;
+
+        const projectOwner = document.createElement('td');
+
+        appController.callGetDocument(project.projectOwner, 'users').then(userData => {
+          const user = userData.data();
+          projectOwner.textContent = user.firstName + ' ' + user.lastName;
+        })
+
+        const projectDetailsAndTask = document.createElement('td');
+        const projectList = document.createElement('ul');
+        projectDetailsAndTask.appendChild(projectList);
+
+        const projectListFirst = document.createElement('li');
+        projectList.appendChild(projectListFirst);
+
+        const projectDetailsTag = document.createElement('p');
+        projectListFirst.appendChild(projectDetailsTag);
+
+        const projectDetailsLink = document.createElement('a');
+        projectDetailsTag.appendChild(projectDetailsLink);
+
+        projectDetailsLink.setAttribute('data-id', docData.id);
+        projectDetailsLink.href = '#';
+        projectDetailsLink.classList.add('btn-projectDetails');
+        projectDetailsLink.textContent = 'Details';
+
+        const projectListSecond = document.createElement('li');
+        projectList.appendChild(projectListSecond);
+
+        const projectTaskTag = document.createElement('p');
+        projectListSecond.appendChild(projectTaskTag);
+
+        const projectTaskLink = document.createElement('a');
+        projectTaskTag.appendChild(projectTaskLink);
+
+        projectTaskLink.href = '#';
+        projectTaskLink.setAttribute('data-id', docData.id);
+        projectTaskLink.classList.add('btn-projectTask');
+        projectTaskLink.textContent = 'Tasks';
+
+        row.appendChild(projectName);
+        row.appendChild(projectOwner);
+        row.appendChild(projectDetailsAndTask);
+
+        projectRowData.appendChild(row);
+        projectTableBody.appendChild(projectRowData);
       });
-    }
+
+      //Project details
+      const btnsProjectDetails = projectTableBody.querySelectorAll(".btn-projectDetails");
+      btnsProjectDetails.forEach(btn => {
+        btn.addEventListener('click', ({ target: { dataset } }) => {
+          const projectId = dataset.id;
+
+          //REDIRECT TO PROJECT TASKS
+          this.displayProjectDetails(projectId);
+        })
+      });
+
+      //Project tasks
+      const btnsProjectTask = projectTableBody.querySelectorAll(".btn-projectTask");
+      btnsProjectTask.forEach(btn => {
+        btn.addEventListener('click', ({ target: { dataset } }) => {
+          const projectId = dataset.id;
+
+          //REDIRECT TO PROJECT TASKS
+          this.displayProjectTasks(projectId);
+        })
+      });
+    }, sortField, sortBy);
+
   }
 
   displayProjectDetails(projectId) {
@@ -683,14 +631,9 @@ export class View {
     displayProjectTasks.style.display = 'none';
     breadcumbsTeams.style.display = 'block';
 
-    //const taskForm = document.getElementById('task-form');
-    //const taskTableBody = document.getElementById('task-table-body');
-    //const taskRowData = document.createDocumentFragment();
     const projectForm = document.getElementById('project-form');
     const projectTeam = document.getElementById('project-team');
     const projectOwnerSelect = document.getElementById('project-owner');
-    let editStatus = false;
-    let id = '';
 
     const location = 'projects';
 
@@ -702,9 +645,10 @@ export class View {
       projectForm['project-title'].value = projectData.projectName;
       projectBreadcrumb.textContent = projectData.projectName;
 
-
-
       //call document snapshot
+
+      const sortField = 'lastLogin';
+      const sortBy = 'desc';
       appController.callGetDocumentSnapshot('users', (users) => {
         users.forEach(user => {
           const userData = user.data()
@@ -720,7 +664,7 @@ export class View {
 
           projectOwnerSelect.appendChild(userOption);
         });
-      });
+      }, sortField, sortBy);
 
       projectForm['project-description'].value = projectData.description;
 
@@ -781,14 +725,37 @@ export class View {
 
       projectForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        console.log('in submit');
+
+        const title = projectForm['project-title'].value;
+        const owner = projectForm['project-owner'].value;
+        const description = projectForm['project-description'].value;
+
+        const projectData = {
+          projectName: title,
+          projectOwner: owner,
+          description: description,
+          lastEdit: Timestamp.now()
+        }
+
+        appController.callUpdateDocument(projectId, projectData, location);
+        console.log('project information udpated!');
+
+        cancelBtn.style.display = 'none';
+        saveBtn.style.display = 'none';
+        editBtn.style.display = 'block';
+
+        projectForm['project-title'].disabled = true;
+        projectForm['project-owner'].disabled = true;
+        projectForm['project-description'].disabled = true;
+        projectForm['project-team'].disabled = true;
+
+        projectDetails.style.display = 'none';
+        displayProjects.style.display = 'block';
+        displayProjectTasks.style.display = 'none';
+        breadcumbsTeams.style.display = 'none';
+
       })
     }
-
-
-
-
-
 
   }
 
@@ -815,13 +782,22 @@ export class View {
     const tasksCollection = '/tasks';
     const location = projectCollection.concat(projectId, tasksCollection);
 
+    const sortField = 'creationDate';
+    const sortBy = 'desc';
+
     appController.callGetDocumentSnapshot(location, (querySnapshot) => {
-      console.log('in snapshot!');
 
       taskTableBody.textContent = '';
       querySnapshot.forEach(docData => {
         const task = docData.data();
         const dueDate = task.dueDate.toDate().toString().slice(0, 16);
+
+        let startDate;
+        if (task.startDate == null) {
+          startDate = dueDate;
+        } else {
+          startDate = task.startDate.toDate().toString().slice(0, 16);
+        }
 
         const row = document.createElement('tr');
 
@@ -834,8 +810,25 @@ export class View {
         const taskPriority = document.createElement('td');
         taskPriority.textContent = this.priorityDict[task.priority];
 
+        const taskStart = document.createElement('td');
+        taskStart.textContent = startDate;
+
         const taskDue = document.createElement('td');
         taskDue.textContent = dueDate;
+
+        const taskDetails = document.createElement('td');
+        const taskDetailsTag = document.createElement('p');
+        taskDetails.appendChild(taskDetailsTag);
+
+        const taskDetailsLink = document.createElement('a');
+        taskDetailsTag.appendChild(taskDetailsLink);
+
+        taskDetailsLink.setAttribute('data-id', docData.id);
+        taskDetailsLink.href = '#';
+        taskDetailsLink.classList.add('btn-taskDetails');
+        taskDetailsLink.setAttribute('data-bs-toggle', 'modal');
+        taskDetailsLink.setAttribute('data-bs-target', '#createTaskModal');
+        taskDetailsLink.textContent = 'Details';
 
         const editTask = document.createElement('td');
         const editTaskButton = document.createElement('button');
@@ -856,89 +849,233 @@ export class View {
         appController.callGetDocument(projectId, 'projects').then(projectData => {
           const project = projectData.data();
           projectBreadcrumb.textContent = project.projectName;
-
         })
-
         row.appendChild(taskName);
         row.appendChild(taskStatus);
         row.appendChild(taskPriority);
+        row.appendChild(taskStart);
         row.appendChild(taskDue);
-        row.appendChild(editTask);
-        row.appendChild(deleteTask);
+        row.appendChild(taskDetails);
 
         taskRowData.appendChild(row);
         taskTableBody.appendChild(taskRowData);
-
       });
 
-      //delete task
-      const btnsDelete = taskTableBody.querySelectorAll(".btn-delete")
-      btnsDelete.forEach(btn => {
-        btn.addEventListener('click', ({ target: { dataset } }) => {
-          appController.callDeleteDocument(dataset.id, location)
-        })
-      })
-
-      //edit task
-      const btnsEdit = taskTableBody.querySelectorAll(".btn-edit")
-      btnsEdit.forEach(btn => {
-        btn.addEventListener('click', async ({ target: { dataset } }) => {
-          const docData = await appController.callGetDocument(dataset.id, location);
-          const task = docData.data();
-
-          taskForm['task-title'].value = task.title;
-          taskForm['task-status'].value = task.status;
-          taskForm['task-priority'].value = task.priority;
-          taskForm['task-dueDate'].valueAsDate = task.dueDate;
-
-          editStatus = true;
-          id = docData.id;
-          taskForm['btn-task-save'].textContent = 'Update';
-        })
-      })
-    });
-
-    //submit or edit
-    taskForm.addEventListener('submit', (e) => {
-      e.preventDefault()
-
-      const title = taskForm['task-title'];
-      const status = taskForm['task-status'];
-      const priority = taskForm['task-priority'];
-      const dueDate = taskForm['task-dueDate'].valueAsDate;
       const taskModal = document.getElementById('createTaskModal');
       const modal = bootstrap.Modal.getInstance(taskModal);
 
-      const dateFix = new Date(dueDate.setHours(dueDate.getHours() + 5)); //get rid of the -5 date offset
+      //Project details
+      const btnsTaskDetails = taskTableBody.querySelectorAll(".btn-taskDetails");
+      btnsTaskDetails.forEach(btn => {
+        btn.addEventListener('click', async ({ target: { dataset } }) => {
 
-      if (!editStatus) {
-        const taskData = {
-          title: title.value,
-          status: parseInt(status.value),
-          priority: parseInt(priority.value),
-          dueDate: dateFix,
-          createdBy: appController.appSession.user.uid,
-          creationDate: Timestamp.now()
-        }
+          //open task details modal and if admin, show delete button
+          const docData = await appController.callGetDocument(dataset.id, location);
+          const task = docData.data();
 
-        appController.callSaveDocument(taskData, location);
-      } else {
-        const taskData = {
-          title: title.value,
-          status: parseInt(status.value),
-          priority: parseInt(priority.value),
-          dueDate: dateFix,
-          editedBy: appController.appSession.user.uid,
-          lastEdit: Timestamp.now()
-        }
+          const projectSelect = document.getElementById('task-project');
+          const taskAssigneeSelect = document.getElementById('task-assignee');
+          projectSelect.textContent = '';
+          taskAssigneeSelect.textContent = '';
 
-        appController.callUpdateDocument(id, taskData, location);
-        editStatus = false;
-        taskForm['btn-task-save'].textContent = 'Save';
+          let startDate;
+          if (task.startDate == null) {
+            startDate = task.dueDate;
+          } else {
+            startDate = task.startDate;
+          }
+
+          //change all fields to read only
+
+          taskForm['task-title'].disabled = true;
+          taskForm['task-project'].disabled = true;
+          taskForm['task-assignee'].disabled = true;
+          taskForm['task-status'].disabled = true;
+          taskForm['task-priority'].disabled = true;
+          taskForm['task-creationDate'].disabled = true;
+          taskForm['task-startDate'].disabled = true;
+          taskForm['task-dueDate'].disabled = true;
+          taskForm['task-lastEdit'].disabled = true;
+
+          taskForm['task-title'].value = task.title;
+
+          //project dropdown
+          taskForm['task-project'].value = '';
+          const firstProjectOption = document.createElement('option');
+          firstProjectOption.value = '';
+          firstProjectOption.textContent = '--Select Project--';
+          projectSelect.appendChild(firstProjectOption);
+          firstProjectOption.selected = true;
+          firstProjectOption.disabled = true;
+
+          const projectSortField = 'creationDate';
+          const projectSortBy = 'desc';
+          appController.callGetDocumentSnapshot('projects', (querySnapshot) => {
+            //get all projects in dropdown and make selected one
+            querySnapshot.forEach(projectData => {
+              const project = projectData.data()
+
+              const projectOption = document.createElement('option');
+              projectOption.value = projectData.id;
+              projectOption.textContent = project.projectName;
+
+              if (projectData.id == projectId) {
+                //make selected
+                firstProjectOption.selected = false;
+                projectOption.selected = true;
+              }
+              projectSelect.appendChild(projectOption)
+            })
+          }, projectSortField, projectSortBy);
+
+          //assignee
+          const firstAssigneeOption = document.createElement('option');
+          firstAssigneeOption.value = '';
+          firstAssigneeOption.textContent = '--Select Assignee--';
+          taskAssigneeSelect.appendChild(firstAssigneeOption);
+          firstAssigneeOption.selected = true;
+          firstAssigneeOption.disabled = true;
+
+          const taskSortField = 'lastLogin';
+          const taskSortBy = 'desc';
+          appController.callGetDocumentSnapshot('users', (users) => {
+            users.forEach(user => {
+
+              const userData = user.data()
+              //for each user create an opttion
+              const userOption = document.createElement('option');
+              userOption.value = user.id;
+              userOption.textContent = userData.firstName + ' ' + userData.lastName;
+
+              //if user is task asignee, make him the selected option
+              if (user.id == task.assignee) {
+                firstAssigneeOption.selected = false;
+                userOption.selected = true;
+              }
+
+              taskAssigneeSelect.appendChild(userOption);
+            });
+          }, taskSortField, taskSortBy);
+
+          taskForm['task-status'].value = task.status;
+          taskForm['task-priority'].value = task.priority;
+          taskForm['task-creationDate'].valueAsDate = task.creationDate.toDate();
+          taskForm['task-startDate'].valueAsDate = startDate.toDate();
+          taskForm['task-dueDate'].valueAsDate = task.dueDate.toDate();
+          taskForm['task-lastEdit'].valueAsDate = task.lastEdit.toDate();
+
+          id = docData.id;
+        })
+      });
+
+      if (this.currentUserRole == 0) {
+
+        const deleteBtn = document.getElementById('btn-task-delete');
+        const editBtn = document.getElementById('btn-task-edit');
+        const cancelBtn = document.getElementById('btn-task-cancel');
+        const saveBtn = document.getElementById('btn-task-save');
+        editBtn.style.display = 'block';
+
+        editBtn.addEventListener('click', (e) => {
+          taskForm['task-title'].disabled = false;
+          taskForm['task-project'].disabled = false;
+          taskForm['task-assignee'].disabled = false;
+          taskForm['task-status'].disabled = false;
+          taskForm['task-priority'].disabled = false;
+          taskForm['task-startDate'].disabled = false;
+          taskForm['task-dueDate'].disabled = false;
+          deleteBtn.style.display = 'block';
+          editBtn.style.display = 'none';
+          cancelBtn.style.display = 'block';
+          saveBtn.style.display = 'block';
+          editStatus = true;
+          taskForm['btn-task-save'].textContent = 'Update';
+        });
+
+        cancelBtn.addEventListener('click', (e) => {
+          taskForm['task-title'].disabled = true;
+          taskForm['task-project'].disabled = true;
+          taskForm['task-assignee'].disabled = true;
+          taskForm['task-status'].disabled = true;
+          taskForm['task-priority'].disabled = true;
+          taskForm['task-startDate'].disabled = true;
+          taskForm['task-dueDate'].disabled = true;
+          deleteBtn.style.display = 'none';
+          editBtn.style.display = 'block';
+          cancelBtn.style.display = 'none';
+          saveBtn.style.display = 'none';
+          taskForm['btn-task-save'].textContent = 'Save';
+        });
+
+        //delete task
+        deleteBtn.addEventListener('click', (e) => {
+          console.log('delete button');
+          //appController.callDeleteDocument(dataset.id, location)
+        })
+
+
+        taskForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const taskModal = document.getElementById('createTaskModal');
+          const modal = bootstrap.Modal.getInstance(taskModal);
+
+          const taskTitle = taskForm['task-title'].value;
+          const taskProject = taskForm['task-project'].value;
+          const taskAssignee = taskForm['task-assignee'].value;
+          const taskStatus = taskForm['task-status'].value;
+          const taskPriority = taskForm['task-priority'].value;
+          const taskStartDate = taskForm['task-startDate'].valueAsDate;
+          const taskDueDate = taskForm['task-dueDate'].valueAsDate;
+
+          let taskData;
+          if (!editStatus) { //new task
+            taskData = {
+              title: taskTitle,
+              project: taskProject,
+              assignee: taskAssignee,
+              status: parseInt(taskStatus),
+              priority: parseInt(taskPriority),
+              startDate: taskStartDate,
+              dueDate: taskDueDate,
+              createdBy: appController.appSession.user.uid,
+              creationDate: Timestamp.now()
+            }
+            appController.callSaveDocument(taskData, location);
+            console.log('task created!');
+          } else { //task edit
+            taskData = {
+              title: taskTitle,
+              project: taskProject,
+              assignee: taskAssignee,
+              status: parseInt(taskStatus),
+              priority: parseInt(taskPriority),
+              startDate: taskStartDate,
+              dueDate: taskDueDate,
+              editedBy: appController.appSession.user.uid,
+              lastEdit: Timestamp.now()
+            }
+            appController.callUpdateDocument(id, taskData, location);
+            console.log('task information udpated!');
+            editStatus = false;
+            taskForm['btn-task-save'].textContent = 'Save';
+          }
+          taskForm.reset();
+          modal.hide();
+
+          taskForm['task-title'].disabled = true;
+          taskForm['task-project'].disabled = true;
+          taskForm['task-assignee'].disabled = true;
+          taskForm['task-status'].disabled = true;
+          taskForm['task-priority'].disabled = true;
+          taskForm['task-startDate'].disabled = true;
+          taskForm['task-dueDate'].disabled = true;
+          deleteBtn.style.display = 'none';
+          editBtn.style.display = 'block';
+          cancelBtn.style.display = 'none';
+          saveBtn.style.display = 'none';
+        })
       }
-      taskForm.reset();
-      modal.hide();
-    })
+    }, sortField, sortBy);
   }
 
   displayTasks() {

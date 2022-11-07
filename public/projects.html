@@ -109,9 +109,9 @@
                     <!--Display Projects-->
                     <div class="container p-4" id="display-projects">
                         <div class="row">
-                            <div class="col-md-6 mb-4">
+                            <div class="d-flex flex-row-reverse">
                                 <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
                                     data-bs-target="#createProjectModal">Create Project</button>
                             </div>
 
@@ -166,9 +166,9 @@
                     <!--Display Project Tasks-->
                     <div class="container p-4" id="display-project-tasks" style="display: none">
                         <div class="row">
-                            <div class="col-md-6 mb-4">
+                            <div class="d-flex flex-row-reverse">
                                 <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
                                     data-bs-target="#createTaskModal">Create Task</button>
                             </div>
                             <table class="table">
@@ -177,9 +177,9 @@
                                         <th scope="col">Task</th>
                                         <th scope="col">Status</th>
                                         <th scope="col">Priority</th>
+                                        <th scope="col">Start Date</th>
                                         <th scope="col">Due Date</th>
-                                        <th scope="col">Edit</th>
-                                        <th scope="col">Delete</th>
+                                        <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody id="task-table-body">
@@ -212,19 +212,19 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="project-form">
-                        <label for="project-title">Project Name</label>
-                        <input class="form-control mb-3" type="text" placeholder="project-title" id="project-title"
-                            required>
-                        <label for="project-owner">Project Owner</label>
-                        <input readonly class="form-control-plaintext" type="text" placeholder="project-owner"
-                            id="project-owner" required>
-                        <label for="description">Description:</label>
-                        <textarea class="form-control mb-3" id="project-description" rows="3"
+                    <form id="project-create-form">
+                        <label for="project-create-title">Project Name</label>
+                        <input class="form-control mb-3" type="text" placeholder="project-create-title"
+                            id="project-create-title" required>
+                        <label for="project-create-owner">Project Owner</label>
+                        <input readonly class="form-control-plaintext" type="text" placeholder="project-create-owner"
+                            id="project-create-owner" required>
+                        <label for="project-create-description">Description:</label>
+                        <textarea class="form-control mb-3" id="project-create-description" rows="3"
                             placeholder="Project Description" required></textarea>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button class="btn btn-primary" id="btn-project-save">Save</button>
+                            <button class="btn btn-primary" id="btn-project-create-save">Save</button>
                         </div>
                     </form>
                 </div>
@@ -234,33 +234,69 @@
 
     <!--Create Task Modal -->
     <div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Create Task</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Task</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="task-form">
-                        <label for="title">Task Information:</label>
-                        <input class="form-control mb-3" type="text" placeholder="task-title" id="task-title" required>
-                        <select class="form-select mb-3" aria-label="Select Task Status" id="task-status" required>
-                            <option value="" selected disabled>--Status--</option>
-                            <option value="0">Backlog</option>
-                            <option value="1">To-do</option>
-                            <option value="2">In progress</option>
-                            <option value="3">Completed</option>
-                        </select>
-                        <select class="form-select mb-3" aria-label="Select Priority" id="task-priority" required>
-                            <option value="" selected disabled>--Priority--</option>
-                            <option value="3">Low</option>
-                            <option value="2">Medium</option>
-                            <option value="1">High</option>
-                        </select>
-                        <input class="form-control mb-3" type="date" id="task-dueDate" required>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button class="btn btn-primary" id="btn-task-save">Save</button>
+                        <div class="row gx-5">
+                            <div class="col-6">
+
+                                <label for="task-title">Task Title</label>
+                                <input class="form-control mb-3" type="text" placeholder="task-title" id="task-title"
+                                    required>
+                                <label for="task-project">Project</label>
+                                <select class="form-select mb-3" aria-label="Task Project" id="task-project" required>
+                                </select>
+                                <label for="task-assignee">Asignee</label>
+                                <select class="form-select mb-3" aria-label="Task assignee" id="task-assignee" required>
+                                </select>
+                                <label for="task-status">Status</label>
+                                <select class="form-select mb-3" aria-label="Select Task Status" id="task-status"
+                                    required>
+                                    <option value="" selected disabled>--Status--</option>
+                                    <option value="0">Backlog</option>
+                                    <option value="1">To-do</option>
+                                    <option value="2">In progress</option>
+                                    <option value="3">Completed</option>
+                                    <option value="4">On hold</option>
+                                    <option value="5">Cancelled</option>
+                                </select>
+                                <label for="task-priority">Priority</label>
+                                <select class="form-select mb-3" aria-label="Select Priority" id="task-priority"
+                                    required>
+                                    <option value="" selected disabled>--Priority--</option>
+                                    <option value="3">Low</option>
+                                    <option value="2">Medium</option>
+                                    <option value="1">High</option>
+                                </select>
+
+                            </div>
+                            <div class="col-6">
+
+                                <label for="task-creationDate">Creation Date</label>
+                                <input class="form-control mb-3" type="date" id="task-creationDate" disabled>
+                                <label for="task-startDate">Start Date</label>
+                                <input class="form-control mb-3" type="date" id="task-startDate" required>
+                                <label for="task-dueDate">Due Date</label>
+                                <input class="form-control mb-3" type="date" id="task-dueDate" required>
+                                <label for="task-lastEdit">Last Edit</label>
+                                <input class="form-control mb-3" type="date" id="task-lastEdit" disabled>
+                            
+                            </div>
+                        </div>
+
+                        <div class="modal-footer d-flex">
+                            <button type="button" class="btn btn-danger me-auto" data-bs-dismiss="modal" id="btn-task-delete"
+                            style="display: none">Delete</button>
+                            <button type="button" class="btn btn-secondary" id="btn-task-edit"
+                                style="display: none">Edit</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btn-task-cancel"
+                                style="display: none">Cancel</button>
+                            <button class="btn btn-primary" id="btn-task-save" style="display: none">Save</button>
                         </div>
                     </form>
                 </div>

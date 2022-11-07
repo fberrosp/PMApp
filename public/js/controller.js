@@ -59,8 +59,8 @@ class Controller {
         this.appModel.updateDocument(id, data, location);
     }
 
-    callGetDocumentSnapshot(location, callback) {
-        this.appModel.getDocumentSnapshot(location, callback);
+    callGetDocumentSnapshot(location, callback, sortField, sortBy) {
+        this.appModel.getDocumentSnapshot(location, callback, sortField, sortBy);
     }
 
 }

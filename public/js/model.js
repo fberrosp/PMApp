@@ -29,8 +29,8 @@ export class Model {
     updateDoc(doc(appController.appSession.db, location, id), data);
   }
 
-  getDocumentSnapshot(location, callback){
-    const currentData = query(collection(appController.appSession.db, location), orderBy('creationDate', 'desc'));
+  getDocumentSnapshot(location, callback, sortField, sortBy){
+    const currentData = query(collection(appController.appSession.db, location), orderBy(sortField, sortBy));
     onSnapshot(currentData, callback);
   }
 
