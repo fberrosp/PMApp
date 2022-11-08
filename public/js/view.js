@@ -868,10 +868,17 @@ export class View {
       const taskModal = document.getElementById('createTaskModal');
       const modal = bootstrap.Modal.getInstance(taskModal);
 
-      //Project details
+      //Task Details
       const btnsTaskDetails = taskTableBody.querySelectorAll(".btn-taskDetails");
       btnsTaskDetails.forEach(btn => {
         btn.addEventListener('click', async ({ target: { dataset } }) => {
+
+          const editBtn = document.getElementById('btn-task-edit');
+          const cancelBtn = document.getElementById('btn-task-cancel');
+          const saveBtn = document.getElementById('btn-task-save');
+          editBtn.style.display = 'block';
+          cancelBtn.style.display = 'none';
+          saveBtn.style.display = 'none';
 
           //open task details modal and if admin, show delete button
           const docData = await appController.callGetDocument(dataset.id, location);
@@ -980,14 +987,102 @@ export class View {
       });
     }, sortField, sortBy);
 
-    //Admin
-    if (this.currentUserRole == 0) {
+    //Admin & Dev
+    if (this.currentUserRole == 0 || this.currentUserRole == 1) { //admins and devs can create and update
 
       const deleteBtn = document.getElementById('btn-task-delete');
       const editBtn = document.getElementById('btn-task-edit');
       const cancelBtn = document.getElementById('btn-task-cancel');
       const saveBtn = document.getElementById('btn-task-save');
+      const createBtn = document.getElementById('btn-create-task-modal');
       editBtn.style.display = 'block';
+
+      //Admin only
+      if (this.currentUserRole == 0) { //only admins can delete tasks
+        //Delete
+        deleteBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+
+          console.log('delete button');
+          //appController.callDeleteDocument(dataset.id, location)
+        })
+      }
+
+      //Create
+      createBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const projectSelect = document.getElementById('task-project');
+        const taskAssigneeSelect = document.getElementById('task-assignee');
+        projectSelect.textContent = '';
+        taskAssigneeSelect.textContent = '';
+
+        editBtn.style.display = 'none';
+        saveBtn.style.display = 'block';
+        cancelBtn.style.display = 'block';
+
+        taskForm.reset();
+
+        taskForm['task-title'].disabled = false;
+        taskForm['task-project'].disabled = false;
+        taskForm['task-assignee'].disabled = false;
+        taskForm['task-status'].disabled = false;
+        taskForm['task-priority'].disabled = false;
+        taskForm['task-startDate'].disabled = false;
+        taskForm['task-dueDate'].disabled = false;
+
+        //project dropdown
+        taskForm['task-project'].value = '';
+        const firstProjectOption = document.createElement('option');
+        firstProjectOption.value = '';
+        firstProjectOption.textContent = '--Select Project--';
+        projectSelect.appendChild(firstProjectOption);
+        firstProjectOption.selected = true;
+        firstProjectOption.disabled = true;
+
+        const projectSortField = 'creationDate';
+        const projectSortBy = 'desc';
+        appController.callGetDocumentSnapshot('projects', (querySnapshot) => {
+          //get all projects in dropdown and make selected one
+          querySnapshot.forEach(projectData => {
+            const project = projectData.data()
+
+            const projectOption = document.createElement('option');
+            projectOption.value = projectData.id;
+            projectOption.textContent = project.projectName;
+
+            if (projectData.id == projectId) {
+              //make selected
+              firstProjectOption.selected = false;
+              projectOption.selected = true;
+            }
+            projectSelect.appendChild(projectOption)
+          })
+        }, projectSortField, projectSortBy);
+
+        //assignee
+        const firstAssigneeOption = document.createElement('option');
+        firstAssigneeOption.value = '';
+        firstAssigneeOption.textContent = '--Select Assignee--';
+        taskAssigneeSelect.appendChild(firstAssigneeOption);
+        firstAssigneeOption.selected = true;
+        firstAssigneeOption.disabled = true;
+
+        const taskSortField = 'lastLogin';
+        const taskSortBy = 'desc';
+        appController.callGetDocumentSnapshot('users', (users) => {
+          users.forEach(user => {
+
+            const userData = user.data()
+            //for each user create an opttion
+            const userOption = document.createElement('option');
+            userOption.value = user.id;
+            userOption.textContent = userData.firstName + ' ' + userData.lastName;
+
+            taskAssigneeSelect.appendChild(userOption);
+          });
+        }, taskSortField, taskSortBy);
+
+      })
 
       //Edit
       editBtn.addEventListener('click', (e) => {
@@ -1011,6 +1106,8 @@ export class View {
       //Cancel
       cancelBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        const taskModal = document.getElementById('createTaskModal');
+        const modal = bootstrap.Modal.getInstance(taskModal);
 
         taskForm['task-title'].disabled = true;
         taskForm['task-project'].disabled = true;
@@ -1024,15 +1121,10 @@ export class View {
         cancelBtn.style.display = 'none';
         saveBtn.style.display = 'none';
         taskForm['btn-task-save'].textContent = 'Save';
+
+        taskForm.reset();
+        modal.hide();
       });
-
-      //Delete
-      deleteBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        console.log('delete button');
-        //appController.callDeleteDocument(dataset.id, location)
-      })
 
       //Submit
       taskForm.addEventListener('submit', (e) => {
@@ -1097,6 +1189,8 @@ export class View {
         modal.hide();
       })
     }
+
+
   }
 
   displayTasks() {
