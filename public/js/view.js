@@ -76,6 +76,20 @@ export class View {
         loginForm.reset();
       })
     }
+
+    //Demo user signin
+    const demoUser = document.getElementById('demoBtn');
+    demoUser.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      const demoUserData = {
+        email: 'test@test.com',
+        password: 'test123'
+      }
+
+      appController.callUserLogin(demoUserData);
+    })
+
   }
 
   indexView() {
