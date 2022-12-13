@@ -1,19 +1,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"
+import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, getAdditionalUserInfo } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"
 import { getFirestore } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
 import { appController } from "./controller.js"
+import { firebaseConfig } from "./firebaseConfig.js";
 
 export class Session {
   constructor() {
-    const firebaseConfig = {
-      apiKey: "AIzaSyA79i2Jibtq8lEAMhBw42gN5m_x0KnesXc",
-      authDomain: "issuetrackingsystem-9d0f7.firebaseapp.com",
-      projectId: "issuetrackingsystem-9d0f7",
-      storageBucket: "issuetrackingsystem-9d0f7.appspot.com",
-      messagingSenderId: "1004125926086",
-      appId: "1:1004125926086:web:6c1049212084453c485dc7"
-    };
-
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     this.auth = getAuth(app);
@@ -98,9 +90,14 @@ export class Session {
 
         // The signed-in user info.
         const user = result.user;
-        const firstName = user.displayName.split(" ")[0]
-        const lastName = user.displayName.split(" ")[1]
-        appController.callSaveUserData(user, firstName, lastName)
+        
+        const {isNewUser} = getAdditionalUserInfo(result)
+        if (isNewUser){
+          console.log('New user!');
+          const firstName = user.displayName.split(" ")[0]
+          const lastName = user.displayName.split(" ")[1]
+          appController.callSaveUserData(user, firstName, lastName)
+        }
         console.log('Google sign-in success!')
         // ...
       }).catch((error) => {

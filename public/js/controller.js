@@ -51,6 +51,14 @@ class Controller {
         return this.appModel.getDocument(id, location);
     }
 
+    callGetDocuments(location) {
+        return this.appModel.getDocuments(location);
+    }
+
+    callGetCollectionGroup(location) {
+        return this.appModel.getCollectionGroup(location);
+    }
+
     callDeleteDocument(id, location) {
         this.appModel.deleteDocument(id, location);
     }
